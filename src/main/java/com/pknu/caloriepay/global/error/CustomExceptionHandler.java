@@ -5,6 +5,7 @@ import com.pknu.caloriepay.global.enums.ResCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -16,6 +17,13 @@ public class CustomExceptionHandler {
         log.error(e.getErrorCode().getMessage());
         return ResponseEntity.status(e.getErrorCode().getHttpStatus())
                 .body(BaseRes.fail(e.getErrorCode()));
+    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ResponseEntity<BaseRes<String>> handleMethodArgumentNotValidExeption(MethodArgumentNotValidException e){
+        log.error(e.getBindingResult()
+                .getFieldErrors().get(0).getDefaultMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(BaseRes.fail(ResCode.BAD_REQUEST));
     }
 
     @ExceptionHandler(Exception.class)
