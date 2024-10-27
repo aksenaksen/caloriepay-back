@@ -14,6 +14,7 @@ public enum ResCode {
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 올바르지 않습니다.", "ERROR-BR-001"),
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "올바르지 않은 토큰 요청입니다.", "ERROR-BR-002"),
     DUPLICATE_USER_EMAIL(HttpStatus.BAD_REQUEST, "해당 유저 이메일이 존재합니다.", "ERROR-BR-003"),
+    DUPLICATE_USER_NICK(HttpStatus.BAD_REQUEST, "해당 유저 닉네임 존재합니다.", "ERROR-BR-003"),
     START_IS_AFTER_END_DATE(HttpStatus.BAD_REQUEST,"시작날짜는 끝날짜보다 빠를수없습니다.", "ERROR-BR-004"),
 
     //UNAUTHORIZED
