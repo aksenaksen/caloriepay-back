@@ -6,7 +6,9 @@ import com.pknu.caloriepay.domain.user.domain.JoinType;
 import com.pknu.caloriepay.domain.user.domain.Member;
 import com.pknu.caloriepay.domain.user.domain.MemberCredentials;
 import com.pknu.caloriepay.domain.user.domain.Preferences;
-import com.pknu.caloriepay.domain.user.dto.JoinRequestDto;
+import com.pknu.caloriepay.domain.user.dto.request.JoinRequestDto;
+import com.pknu.caloriepay.global.enums.ResCode;
+import com.pknu.caloriepay.global.error.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,7 @@ public class MemberJoinService {
     @Transactional
     public Member joinMember(JoinRequestDto joinRequestDto) {
         if (memberRepository.findByEmail(joinRequestDto.getEmail()).isPresent()) {
-            throw new IllegalStateException("이미 존재하는 이메일입니다.");
+            throw new CustomException(ResCode.DUPLICATE_USER_EMAIL);
         }
 
         String encodedPassword = passwordEncoder.encode(joinRequestDto.getPassword());
