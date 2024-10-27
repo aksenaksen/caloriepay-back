@@ -1,12 +1,17 @@
 package com.pknu.caloriepay.domain.user.domain;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import lombok.Getter;
 
 @Embeddable
+@Getter
 public class Preferences {
     // 정보 공개 여부
     private boolean visible;
     // 가입 유형
+    @Enumerated(EnumType.STRING)
     private JoinType joinType;
     // 회원 정보 등록 여부
     private boolean isProfileRegistered;

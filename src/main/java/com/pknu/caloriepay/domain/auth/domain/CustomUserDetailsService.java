@@ -26,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws CustomException {
         Optional<Member> member = Optional.ofNullable(memberRepository.findByEmail(email))
                 .orElseThrow(() -> new CustomException(ResCode.USER_NOT_FOUND));
 
@@ -38,7 +38,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     }
 
-    public UserDetails loadUserById(Long memberId) throws UsernameNotFoundException {
+    public UserDetails loadUserById(Long memberId) throws CustomException {
         Optional<Member> member = Optional.ofNullable(memberRepository.findById(memberId))
                 .orElseThrow(() -> new CustomException(ResCode.USER_NOT_FOUND));
 

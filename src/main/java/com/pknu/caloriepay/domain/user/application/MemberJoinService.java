@@ -1,12 +1,13 @@
 package com.pknu.caloriepay.domain.user.application;
 
+import com.pknu.caloriepay.domain.auth.dto.info.CurrentMemberInfo;
 import com.pknu.caloriepay.domain.user.dao.MemberCredentialsRepository;
 import com.pknu.caloriepay.domain.user.dao.MemberRepository;
-import com.pknu.caloriepay.domain.user.domain.JoinType;
-import com.pknu.caloriepay.domain.user.domain.Member;
-import com.pknu.caloriepay.domain.user.domain.MemberCredentials;
-import com.pknu.caloriepay.domain.user.domain.Preferences;
-import com.pknu.caloriepay.domain.user.dto.JoinRequestDto;
+import com.pknu.caloriepay.domain.user.domain.*;
+import com.pknu.caloriepay.domain.user.dto.ProfileDto;
+import com.pknu.caloriepay.domain.user.dto.request.JoinRequestDto;
+import com.pknu.caloriepay.global.enums.ResCode;
+import com.pknu.caloriepay.global.error.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,9 +23,7 @@ public class MemberJoinService {
 
     @Transactional
     public Member joinMember(JoinRequestDto joinRequestDto) {
-        if (memberRepository.findByEmail(joinRequestDto.getEmail()).isPresent()) {
-            throw new IllegalStateException("이미 존재하는 이메일입니다.");
-        }
+        validateMember(joinRequestDto);
 
         String encodedPassword = passwordEncoder.encode(joinRequestDto.getPassword());
 
@@ -45,5 +44,45 @@ public class MemberJoinService {
         memberCredentialsRepository.save(credentials);
 
         return member;
+    }
+
+    @Transactional
+    public ProfileDto registerProfile(ProfileDto profileDto, CurrentMemberInfo memberInfo) {
+        // Member 조회
+        Member member = memberRepository.findById(memberInfo.memberId())
+                .orElseThrow(() -> new CustomException(ResCode.USER_NOT_FOUND));
+
+        // Profile 생성
+        Profile profile = Profile.builder()
+                .gender(profileDto.gender())
+                .age(profileDto.age())
+                .height(profileDto.height())
+                .weight(profileDto.weight())
+                .goal(profileDto.goal())
+                .targetWeight(profileDto.targetWeight())
+                .activityLevel(profileDto.activityLevel())
+                .build();
+
+        // Member의 profile 업데이트
+        member.getPreferences().registerProfile();
+        member.updateProfile(profile);
+
+        return profileDto;
+    }
+
+
+
+    private void validateMember(JoinRequestDto joinRequestDto) {
+        if (memberRepository.findByEmail(joinRequestDto.getEmail()).isPresent()) {
+            throw new CustomException(ResCode.DUPLICATE_USER_EMAIL);
+        }
+
+        if (memberRepository.findByNickname(joinRequestDto.getNickname()).isPresent()){
+            throw new CustomException(ResCode.DUPLICATE_USER_NICK);
+        }
+
+        if (memberRepository.findByPhoneNumber(joinRequestDto.getPhoneNumber()).isPresent()){
+            throw new CustomException(ResCode.DUPLICATE_USER_PHONE);
+        }
     }
 }

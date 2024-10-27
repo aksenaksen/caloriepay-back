@@ -5,6 +5,8 @@ import com.pknu.caloriepay.domain.auth.domain.CustomUserDetails;
 import com.pknu.caloriepay.domain.auth.domain.CustomUserDetailsService;
 import com.pknu.caloriepay.domain.auth.dto.request.LoginRequest;
 import com.pknu.caloriepay.domain.auth.dto.response.JwtToken;
+import com.pknu.caloriepay.global.enums.ResCode;
+import com.pknu.caloriepay.global.error.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,13 +23,13 @@ public class AuthService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public JwtToken getAuthentication(LoginRequest request) throws Exception {
+    public JwtToken getAuthentication(LoginRequest request) throws CustomException {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.email(), request.password())
             );
         } catch (AuthenticationException e) {
-            throw new Exception("Incorrect loginId or password", e);
+            throw new CustomException(ResCode.USER_NOT_FOUND);
         }
 
         final CustomUserDetails userDetails = (CustomUserDetails)customUserDetailsService.loadUserByUsername(

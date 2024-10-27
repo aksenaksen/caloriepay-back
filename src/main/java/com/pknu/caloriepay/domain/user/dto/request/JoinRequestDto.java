@@ -1,4 +1,4 @@
-package com.pknu.caloriepay.domain.user.dto;
+package com.pknu.caloriepay.domain.user.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
