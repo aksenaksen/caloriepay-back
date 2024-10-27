@@ -24,9 +24,7 @@ public class MemberJoinService {
 
     @Transactional
     public Member joinMember(JoinRequestDto joinRequestDto) {
-        if (memberRepository.findByEmail(joinRequestDto.getEmail()).isPresent()) {
-            throw new CustomException(ResCode.DUPLICATE_USER_EMAIL);
-        }
+        validateMember(joinRequestDto);
 
         String encodedPassword = passwordEncoder.encode(joinRequestDto.getPassword());
 
@@ -47,5 +45,19 @@ public class MemberJoinService {
         memberCredentialsRepository.save(credentials);
 
         return member;
+    }
+
+    private void validateMember(JoinRequestDto joinRequestDto) {
+        if (memberRepository.findByEmail(joinRequestDto.getEmail()).isPresent()) {
+            throw new CustomException(ResCode.DUPLICATE_USER_EMAIL);
+        }
+
+        if (memberRepository.findByNickname(joinRequestDto.getNickname()).isPresent()){
+            throw new CustomException(ResCode.DUPLICATE_USER_NICK);
+        }
+
+        if (memberRepository.findByPhoneNumber(joinRequestDto.getPhoneNumber()).isPresent()){
+            throw new CustomException(ResCode.DUPLICATE_USER_PHONE);
+        }
     }
 }
