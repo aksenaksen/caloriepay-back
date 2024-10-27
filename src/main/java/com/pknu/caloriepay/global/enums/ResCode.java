@@ -14,6 +14,7 @@ public enum ResCode {
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 올바르지 않습니다.", "ERROR-BR-001"),
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "올바르지 않은 토큰 요청입니다.", "ERROR-BR-002"),
     DUPLICATE_USER_EMAIL(HttpStatus.BAD_REQUEST, "해당 유저 이메일이 존재합니다.", "ERROR-BR-003"),
+    START_IS_AFTER_END_DATE(HttpStatus.BAD_REQUEST,"시작날짜는 끝날짜보다 빠를수없습니다.", "ERROR-BR-004"),
 
     //UNAUTHORIZED
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다.", "ERROR-UA-000"),
@@ -25,7 +26,11 @@ public enum ResCode {
 
     //NOT_FOUND
     NOT_FOUND(HttpStatus.NOT_FOUND, "해당 요청 정보를 찾을 수 없습니다.", "ERROR-NF-000"),
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.", "ERROR-NF-001"),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.", "ERROR-NF-001")
+    ,
+    EXERCISE_NOT_FOUND(HttpStatus.NOT_FOUND,"해당하는 운동을 찾을 수 없습니다.","ERROR-NF-002")
+    ,
+
 
     //FORBIDDEN
     FORBIDDEN(HttpStatus.FORBIDDEN, "금지된 요청입니다.", "ERROR-FB-000"),
