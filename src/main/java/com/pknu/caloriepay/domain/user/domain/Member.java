@@ -34,8 +34,14 @@ public class Member {
                 .email(email)
                 .phoneNumber(phoneNumber)
                 .nickname(nickname)
+                .profile(profile)
                 .preferences(preferences)
                 .build();
+    }
+
+    // profile update
+    public void updateProfile(Profile profile) {
+        this.profile = profile;
     }
 
 

@@ -6,14 +6,14 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class MemberResponseDto {
+public class JoinResponseDto {
     private Long memberId;
     private String email;
     private String nickname;
 
     // Member -> MemberResponseDto 변환 메서드
-    public static MemberResponseDto from(Member member) {
-        return MemberResponseDto.builder()
+    public static JoinResponseDto from(Member member) {
+        return JoinResponseDto.builder()
                 .memberId(member.getId())
                 .email(member.getEmail())
                 .nickname(member.getNickname())
