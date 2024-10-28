@@ -1,5 +1,6 @@
 package com.pknu.caloriepay.domain.exercise.api;
 
+import com.pknu.caloriepay.domain.auth.dto.info.CurrentMemberInfo;
 import com.pknu.caloriepay.domain.exercise.application.ExerciseRecordService;
 import com.pknu.caloriepay.domain.exercise.application.ExerciseTypeService;
 import com.pknu.caloriepay.domain.exercise.dto.RequestExerciseRecordDto;
@@ -8,6 +9,7 @@ import com.pknu.caloriepay.global.dto.BaseRes;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,13 +29,9 @@ public class ExerciseApi {
         return ResponseEntity.ok(BaseRes.success(data));
     }
     @PostMapping("/record")
-    public ResponseEntity<BaseRes<Void>> postRecordExercise(@RequestBody @Valid RequestExerciseRecordDto exerciseRecordDto){
-        Long userId = 1L;
+    public ResponseEntity<BaseRes<Void>> postRecordExercise(@AuthenticationPrincipal CurrentMemberInfo info, @RequestBody @Valid RequestExerciseRecordDto exerciseRecordDto){
 
-        exerciseRecordDto.getExercise()
-                        .forEach(dto ->
-                            exerciseRecordService.recordExercise(userId,exerciseRecordDto.getTitle(),dto)
-                        );
+        exerciseRecordService.recordExercise(info.memberId(),exerciseRecordDto.getTitle(),exerciseRecordDto.getExercise());
 
         return ResponseEntity.ok(BaseRes.success(null));
     }
