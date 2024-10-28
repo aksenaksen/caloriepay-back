@@ -8,8 +8,10 @@ import com.pknu.caloriepay.domain.exercise.dto.RequestExerciseDto;
 import com.pknu.caloriepay.domain.exercise.dto.ResponseExerciseTypeDto;
 import com.pknu.caloriepay.domain.exercise.exception.ExerciseNotFoundException;
 import com.pknu.caloriepay.global.enums.ResCode;
+import com.pknu.caloriepay.global.event.ExerciseEventDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,22 +25,28 @@ public class ExerciseRecordService {
 
     private final ExerciseRecordRepository exerciseRecordRepository;
     private final ExerciseTypeRepository exerciseTypeRepository;
-
+    private final ApplicationEventPublisher applicationEventPublisher;
     @Transactional
-    public void recordExercise(Long userId, String title, RequestExerciseDto requestExerciseDto){
+    public void recordExercise(Long userId, String title, List<RequestExerciseDto> requestExerciseDtoList) {
 
-        ExerciseType exerciseType = exerciseTypeRepository.findByName(requestExerciseDto.getExerciseName())
-                .orElseThrow(() ->new ExerciseNotFoundException(ResCode.EXERCISE_NOT_FOUND));
-//        하루 칼로리 늘려주는 기능 추가되어야함.
+        requestExerciseDtoList.forEach(requestExerciseDto -> {
+            ExerciseType exerciseType = exerciseTypeRepository.findByName(requestExerciseDto.getExerciseName())
+                    .orElseThrow(() -> new ExerciseNotFoundException(ResCode.EXERCISE_NOT_FOUND));
+            double caloriesBurned = exerciseType.calculateCalories(requestExerciseDto.getDuration());
 
-        exerciseRecordRepository.save(ExerciseRecord.builder()
-                        .exerciseTypeId(exerciseType.getId())
-                        .title(title)
-                        .duration(requestExerciseDto.getDuration())
-                        .userId(userId)
-                        .caloriesBurned(exerciseType.calculateCalories(requestExerciseDto.getDuration()))
-                        .date(LocalDate.now())
-                        .build());
+            exerciseRecordRepository.save(
+                    ExerciseRecord.builder()
+                            .exerciseTypeId(exerciseType.getId())
+                            .title(title)
+                            .duration(requestExerciseDto.getDuration())
+                            .userId(userId)
+                            .caloriesBurned(caloriesBurned)
+                            .date(LocalDate.now())
+                            .build()
+            );
+
+            applicationEventPublisher.publishEvent(new ExerciseEventDto(userId, caloriesBurned));
+        });
     }
 
 }
