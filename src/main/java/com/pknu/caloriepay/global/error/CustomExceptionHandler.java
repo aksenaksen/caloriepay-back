@@ -1,5 +1,6 @@
 package com.pknu.caloriepay.global.error;
 
+import com.pknu.caloriepay.domain.calender.exception.StartIsAfterEndDateException;
 import com.pknu.caloriepay.global.dto.BaseRes;
 import com.pknu.caloriepay.global.enums.ResCode;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class CustomExceptionHandler {
+
+    @ExceptionHandler(StartIsAfterEndDateException.class)
+    protected ResponseEntity<BaseRes<String>> handleCustomException(StartIsAfterEndDateException e) {
+        log.error(e.getErrorCode().getMessage());
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+                .body(BaseRes.fail(e.getErrorCode()));
+    }
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<BaseRes<String>> handleCustomException(CustomException e) {
         log.error(e.getErrorCode().getMessage());
