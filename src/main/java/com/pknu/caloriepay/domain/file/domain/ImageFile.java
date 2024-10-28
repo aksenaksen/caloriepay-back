@@ -1,6 +1,7 @@
 package com.pknu.caloriepay.domain.file.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +25,17 @@ public class ImageFile {
 
     @Enumerated(EnumType.STRING)
     private ImageCategory imageCategory;
+
+    @Enumerated(EnumType.STRING)
+    private FileStatus fileStatus;
+
+    @Builder
+    public ImageFile(String imageUrl, ImageCategory imageCategory, FileStatus fileStatus) {
+        this.imageUrl = imageUrl;
+        this.imageCategory = imageCategory;
+        this.fileStatus = fileStatus;
+        this.uploadedAt = LocalDateTime.now();
+    }
 
 
 }

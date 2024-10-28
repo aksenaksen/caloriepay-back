@@ -18,6 +18,11 @@ public enum ResCode {
     DUPLICATE_USER_PHONE(HttpStatus.BAD_REQUEST, "해당 유저 전화번호가 존재합니다.", "ERROR-BR-005"),
     START_IS_AFTER_END_DATE(HttpStatus.BAD_REQUEST,"시작날짜는 끝날짜보다 빠를수없습니다.", "ERROR-BR-004"),
 
+    // BAD_REQUEST - Image Upload
+    INVALID_IMAGE_FORMAT(HttpStatus.BAD_REQUEST, "지원하지 않는 이미지 형식입니다.", "ERROR-BR-010"),
+    IMAGE_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "이미지 파일 크기가 초과되었습니다.", "ERROR-BR-011"),
+    IMAGE_UPLOAD_FAILED(HttpStatus.BAD_REQUEST, "이미지 업로드에 실패했습니다.", "ERROR-BR-012"),
+
     //UNAUTHORIZED
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다.", "ERROR-UA-000"),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "Token Expired", "ERROR-UA-001"),
