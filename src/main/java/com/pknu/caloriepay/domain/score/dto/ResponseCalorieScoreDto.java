@@ -1,6 +1,7 @@
 package com.pknu.caloriepay.domain.score.dto;
 
 import com.pknu.caloriepay.domain.score.domain.CalorieScore;
+import com.pknu.caloriepay.domain.user.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,13 +14,16 @@ public class ResponseCalorieScoreDto {
 
     private Long userId;
 
+    private String name;
+
     private LocalDate date;
 
     private Integer score;
 
-    public static ResponseCalorieScoreDto fromEntity(CalorieScore calorieScore) {
+    public static ResponseCalorieScoreDto fromEntity(CalorieScore calorieScore, Member member) {
         return ResponseCalorieScoreDto.builder()
                 .id(calorieScore.getId())
+                .name(member.getName())
                 .score(calorieScore.getScore())
                 .userId(calorieScore.getUserId())
                 .date(calorieScore.getDate())
