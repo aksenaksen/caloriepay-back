@@ -17,6 +17,9 @@ public class Meal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, name = "member_id")
+    private Long memberId;
+
     private LocalDateTime mealTime;
     private int totalCalorie;
     private String mealImgUrl;
@@ -25,7 +28,8 @@ public class Meal {
     private List<Food> foods = new ArrayList<>();
 
     @Builder
-    public Meal(LocalDateTime mealTime, int totalCalorie, String mealImgUrl) {
+    public Meal(Long memberId, LocalDateTime mealTime, int totalCalorie, String mealImgUrl) {
+        this.memberId = memberId;
         this.mealTime = mealTime;
         this.totalCalorie = totalCalorie;
         this.mealImgUrl = mealImgUrl;

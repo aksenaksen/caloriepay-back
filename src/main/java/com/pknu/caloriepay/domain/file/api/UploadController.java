@@ -38,7 +38,7 @@ public class UploadController {
             @AuthenticationPrincipal CurrentMemberInfo memberInfo) {
         UploadResult res = imageUploadService.fileUpload(file,category,memberInfo);
         List<FoodDto> foodList = mealImageAnalysisClient.analyze(res);
-        MealDto result = mealService.save(res,foodList);
+        MealDto result = mealService.save(res,foodList,memberInfo);
         return ResponseEntity.ok().body(BaseRes.success(result));
     }
 
