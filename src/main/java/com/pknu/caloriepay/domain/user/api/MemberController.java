@@ -24,7 +24,7 @@ public class MemberController {
     private final MemberJoinService memberJoinService;
     private final MemberService memberService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<BaseRes<MemberDto>> getMemberInfo(@AuthenticationPrincipal CurrentMemberInfo memberInfo) {
         MemberDto res = memberService.getMemberInfo(memberInfo);
         return ResponseEntity.ok().body(BaseRes.success(res));
