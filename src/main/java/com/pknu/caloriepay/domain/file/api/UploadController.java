@@ -31,7 +31,7 @@ public class UploadController {
     private final MealService mealService;
 
     // 추후에 exercise 인 경우 분기
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<BaseRes<MealDto>> uploadImage(
             @RequestParam("file") MultipartFile file,
             @RequestParam("category") ImageCategory category,
