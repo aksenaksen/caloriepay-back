@@ -2,6 +2,7 @@ package com.pknu.caloriepay.domain.exercise.dto;
 
 
 import com.pknu.caloriepay.domain.exercise.domain.ExerciseRecord;
+import com.pknu.caloriepay.domain.exercise.domain.ExerciseType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,7 +19,7 @@ public class ResponseExerciseRecordDto {
 
     private String title;
 
-    private Long exerciseTypeId;
+    private String exerciseTypeName;
 
     private Integer duration;
 
@@ -26,12 +27,12 @@ public class ResponseExerciseRecordDto {
 
     private LocalDate date;
 
-    public static ResponseExerciseRecordDto fromEntity(ExerciseRecord exerciseRecord){
+    public static ResponseExerciseRecordDto fromEntity(ExerciseRecord exerciseRecord, ExerciseType type){
         return ResponseExerciseRecordDto.builder()
                 .id(exerciseRecord.getId())
                 .userId(exerciseRecord.getUserId())
                 .title(exerciseRecord.getTitle())
-                .exerciseTypeId(exerciseRecord.getExerciseTypeId())
+                .exerciseTypeName(type.getName())
                 .duration(exerciseRecord.getDuration())
                 .caloriesBurned(exerciseRecord.getCaloriesBurned())
                 .date(exerciseRecord.getDate())
