@@ -11,6 +11,7 @@ import com.pknu.caloriepay.global.event.UserProfileEventDto;
 import com.pknu.caloriepay.global.event.ExerciseEventDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,6 +66,7 @@ public class CalorieScoreAndChangeEventListener {
     }
 
 //    운동 기록시 일별 칼로리 계산
+    @Async("threadPoolTaskExecutor")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void caloriePlus(ExerciseEventDto exerciseEventDto){
@@ -73,6 +75,7 @@ public class CalorieScoreAndChangeEventListener {
         dailyCalorieChangeRepository.save(calorieChange);
     }
 
+    @Async("threadPoolTaskExecutor")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void calorieMinus(MealEventDto mealEventDto){
