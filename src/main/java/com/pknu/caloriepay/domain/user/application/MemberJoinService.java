@@ -8,7 +8,9 @@ import com.pknu.caloriepay.domain.user.dto.ProfileDto;
 import com.pknu.caloriepay.domain.user.dto.request.JoinRequestDto;
 import com.pknu.caloriepay.global.enums.ResCode;
 import com.pknu.caloriepay.global.error.CustomException;
+import com.pknu.caloriepay.global.event.UserProfileEventDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ public class MemberJoinService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MemberCredentialsRepository memberCredentialsRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public Member joinMember(JoinRequestDto joinRequestDto) {
@@ -66,6 +69,12 @@ public class MemberJoinService {
         // Member의 profile 업데이트
         member.getPreferences().registerProfile();
         member.updateProfile(profile);
+
+        UserProfileEventDto event = UserProfileEventDto.builder()
+                .userId(member.getId())
+                .profile(profile)
+                .build();
+        eventPublisher.publishEvent(event);
 
         return profileDto;
     }
