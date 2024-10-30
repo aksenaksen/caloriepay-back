@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class ResponseScoreAndCalorieDto {
 
+
     private ResponseDailyCalorieChangeDto calorieChange;
     private ResponseCalorieScoreDto calorieScore;
 }
