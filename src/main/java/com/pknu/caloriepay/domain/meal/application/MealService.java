@@ -1,5 +1,6 @@
 package com.pknu.caloriepay.domain.meal.application;
 
+import com.pknu.caloriepay.domain.auth.dto.info.CurrentMemberInfo;
 import com.pknu.caloriepay.domain.file.domain.ImageFile;
 import com.pknu.caloriepay.domain.file.domain.ImageFileRepository;
 import com.pknu.caloriepay.domain.file.dto.response.UploadResult;
@@ -26,13 +27,13 @@ public class MealService {
     private final MealRepository mealRepository;
 
     @Transactional
-    public MealDto save(UploadResult res, List<FoodDto> foodList) {
+    public MealDto save(UploadResult res, List<FoodDto> foodList, CurrentMemberInfo memberInfo) {
         LocalDateTime mealTime = imageFileRepository.findById(res.imageFileId())
                 .orElseThrow(() -> new CustomException(ResCode.INTERNAL_SERVER_ERROR))
                 .getUploadedAt();
 
         // Meal 객체 생성
-        Meal meal = Meal.builder().mealTime(mealTime).totalCalorie(0).mealImgUrl(res.imgUrl())
+        Meal meal = Meal.builder().memberId(memberInfo.memberId()).mealTime(mealTime).totalCalorie(0).mealImgUrl(res.imgUrl())
                 .build();
 
         // Food 엔티티 리스트 생성
