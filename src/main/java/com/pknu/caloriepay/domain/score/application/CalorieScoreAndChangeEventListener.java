@@ -4,6 +4,7 @@ import com.pknu.caloriepay.domain.score.dao.CalorieScoreRepository;
 import com.pknu.caloriepay.domain.score.dao.DailyCalorieChangeRepository;
 import com.pknu.caloriepay.domain.score.domain.CalorieScore;
 import com.pknu.caloriepay.domain.score.domain.DailyCalorieChange;
+import com.pknu.caloriepay.global.event.MealEventDto;
 import com.pknu.caloriepay.global.event.UserProfileEventDto;
 import com.pknu.caloriepay.global.event.ExerciseEventDto;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +68,14 @@ public class CalorieScoreAndChangeEventListener {
     public void caloriePlus(ExerciseEventDto exerciseEventDto){
         DailyCalorieChange calorieChange= dailyCalorieChangeRepository.findByUserId(exerciseEventDto.getUserId()).orElseThrow();
         calorieChange.plusCalorie(exerciseEventDto.getCalorie());
+        dailyCalorieChangeRepository.save(calorieChange);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void calorieMinus(MealEventDto mealEventDto){
+        DailyCalorieChange calorieChange= dailyCalorieChangeRepository.findByUserId(mealEventDto.getUserId()).orElseThrow();
+        calorieChange.minusCalorie(mealEventDto.getCalorie());
         dailyCalorieChangeRepository.save(calorieChange);
     }
 
