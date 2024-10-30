@@ -7,6 +7,7 @@ import com.pknu.caloriepay.domain.calender.dto.ResponseCalendarDto;
 import com.pknu.caloriepay.domain.calender.dto.ResponseCalenderDetailDto;
 import com.pknu.caloriepay.domain.calender.exception.StartIsAfterEndDateException;
 import com.pknu.caloriepay.domain.exercise.dto.ResponseExerciseRecordDto;
+import com.pknu.caloriepay.domain.meal.dto.MealDto;
 import com.pknu.caloriepay.global.dto.BaseRes;
 import com.pknu.caloriepay.global.enums.ResCode;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +47,8 @@ public class CalendarApi {
             @RequestParam("date")LocalDate date){
 
         List<ResponseExerciseRecordDto> exerciseRecordList = calendarDetailSearchService.getExerciseRecordList(memberInfo.memberId(), date);
+        List<MealDto> mealDtoList = calendarDetailSearchService.getMealRecordList(memberInfo.memberId(),date);
 
-        return ResponseEntity.ok(BaseRes.success(new ResponseCalenderDetailDto(exerciseRecordList)));
+        return ResponseEntity.ok(BaseRes.success(new ResponseCalenderDetailDto(mealDtoList,exerciseRecordList)));
     }
 }
