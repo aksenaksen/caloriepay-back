@@ -42,11 +42,17 @@ public class CalorieRankingService {
 
         Map<String , Object> calorieScoreMap = calorieScoreRepository.findUserRankingByUserId(userId);
         Member member = memberRepository.findById(userId).orElseThrow(() ->new CustomException(ResCode.USER_NOT_FOUND));
+        long countMember = memberRepository.count();
 
         CalorieScore calorieScore= (CalorieScore) calorieScoreMap.get("calorieScore");
         Long ranking = (long) calorieScoreMap.get("ranking");
 
-        return ResponseCalorieScoreRankingDto.of(calorieScore,member, ranking);
+
+        int perRank = (int) ((double) ranking / countMember * 100);
+        ResponseCalorieScoreRankingDto responseCalorieScoreRankingDto=ResponseCalorieScoreRankingDto.of(calorieScore,member, ranking);
+        responseCalorieScoreRankingDto.updatePerRank(perRank);
+
+        return responseCalorieScoreRankingDto;
     }
 
 

@@ -23,6 +23,8 @@ public class ResponseCalorieScoreRankingDto{
 
     private Long rank;
 
+    private Integer perRank;
+
 
     public static ResponseCalorieScoreRankingDto of(CalorieScore calorieScore, Member member, Long rank){
         return ResponseCalorieScoreRankingDto.builder()
@@ -33,5 +35,8 @@ public class ResponseCalorieScoreRankingDto{
                 .rank(rank)
                 .name(member.getName())
                 .build();
+    }
+    public void updatePerRank(Integer perRank){
+        this.perRank=perRank;
     }
 }
