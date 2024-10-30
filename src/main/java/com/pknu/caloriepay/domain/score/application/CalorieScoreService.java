@@ -2,9 +2,11 @@ package com.pknu.caloriepay.domain.score.application;
 
 import com.pknu.caloriepay.domain.score.dao.CalorieScoreRepository;
 import com.pknu.caloriepay.domain.score.domain.CalorieScore;
-import com.pknu.caloriepay.domain.score.dto.ResponseCalorieScoreDto;
+import com.pknu.caloriepay.domain.score.dto.out.ResponseCalorieScoreDto;
 import com.pknu.caloriepay.domain.user.dao.MemberRepository;
 import com.pknu.caloriepay.domain.user.domain.Member;
+import com.pknu.caloriepay.global.enums.ResCode;
+import com.pknu.caloriepay.global.error.CustomException;
 import com.pknu.caloriepay.global.event.DailyCalorieSummaryEventDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,14 +27,14 @@ public class CalorieScoreService {
     private final MemberRepository memberRepository;
 
     public ResponseCalorieScoreDto getCalorieScoreByUserIdAndDate(Long userId){
-        Member member = memberRepository.findById(userId).orElseThrow();
+        Member member = memberRepository.findById(userId).orElseThrow(() ->new CustomException(ResCode.USER_NOT_FOUND));
 
         return calorieScoreRepository.findTopByUserIdOrderByDateDesc(userId)
                 .map((calorieScore) ->ResponseCalorieScoreDto.fromEntity(calorieScore,member))
                 .orElse(null);
     }
     public List<ResponseCalorieScoreDto> getCalorieScoreChangeFor5Month(Long userId,Integer offset) {
-        Member member = memberRepository.findById(userId).orElseThrow();
+        Member member = memberRepository.findById(userId).orElseThrow(() ->new CustomException(ResCode.USER_NOT_FOUND));
         LocalDate currentDate = LocalDate.now();
 
         return IntStream.range(0, offset)
@@ -53,7 +55,7 @@ public class CalorieScoreService {
                         },
                         () -> {
                             CalorieScore latestScore = calorieScoreRepository.findTopByUserIdOrderByDateDesc(userId)
-                                    .orElseThrow();
+                                    .orElseThrow(() -> new CustomException(ResCode.SCORE_NOT_FOUND));
                             calorieScoreRepository.save(
                                     CalorieScore.builder()
                                             .userId(latestScore.getUserId())
@@ -69,7 +71,7 @@ public class CalorieScoreService {
     public void calculateScore(DailyCalorieSummaryEventDto eventDto) {
         eventDto.getDailyCalorieChangeDtoList().forEach(dto -> {
             CalorieScore existingScore = calorieScoreRepository.findByUserIdAndDate(dto.getUserId(), LocalDate.now().minusDays(1))
-                    .orElseThrow();
+                    .orElseThrow(() -> new CustomException(ResCode.SCORE_NOT_FOUND));
 
             CalorieScore newScore = CalorieScore.builder()
                     .userId(dto.getUserId())

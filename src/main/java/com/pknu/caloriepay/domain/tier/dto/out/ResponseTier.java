@@ -1,4 +1,4 @@
-package com.pknu.caloriepay.domain.tier.dto;
+package com.pknu.caloriepay.domain.tier.dto.out;
 
 import com.pknu.caloriepay.domain.tier.domain.DailyTier;
 import com.pknu.caloriepay.domain.tier.domain.MonthlyTier;

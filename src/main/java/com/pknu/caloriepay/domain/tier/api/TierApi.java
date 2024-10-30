@@ -1,9 +1,8 @@
 package com.pknu.caloriepay.domain.tier.api;
 
 import com.pknu.caloriepay.domain.auth.dto.info.CurrentMemberInfo;
-import com.pknu.caloriepay.domain.tier.application.DailyTierService;
 import com.pknu.caloriepay.domain.tier.application.MonthlyTierService;
-import com.pknu.caloriepay.domain.tier.dto.ResponseTier;
+import com.pknu.caloriepay.domain.tier.dto.out.ResponseTier;
 import com.pknu.caloriepay.global.dto.BaseRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

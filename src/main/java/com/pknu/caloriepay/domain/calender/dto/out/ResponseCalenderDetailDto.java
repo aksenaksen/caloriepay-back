@@ -1,6 +1,6 @@
-package com.pknu.caloriepay.domain.calender.dto;
+package com.pknu.caloriepay.domain.calender.dto.out;
 
-import com.pknu.caloriepay.domain.exercise.dto.ResponseExerciseRecordDto;
+import com.pknu.caloriepay.domain.exercise.dto.out.ResponseExerciseRecordDto;
 import com.pknu.caloriepay.domain.meal.dto.MealDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

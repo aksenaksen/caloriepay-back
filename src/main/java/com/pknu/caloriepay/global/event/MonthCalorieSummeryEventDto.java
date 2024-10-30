@@ -1,6 +1,6 @@
 package com.pknu.caloriepay.global.event;
 
-import com.pknu.caloriepay.domain.score.dto.ResponseDailyCalorieChangeDto;
+import com.pknu.caloriepay.domain.score.dto.out.ResponseDailyCalorieChangeDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

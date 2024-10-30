@@ -22,6 +22,9 @@ public enum ResCode {
     INVALID_IMAGE_FORMAT(HttpStatus.BAD_REQUEST, "지원하지 않는 이미지 형식입니다.", "ERROR-BR-010"),
     IMAGE_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "이미지 파일 크기가 초과되었습니다.", "ERROR-BR-011"),
     IMAGE_UPLOAD_FAILED(HttpStatus.BAD_REQUEST, "이미지 업로드에 실패했습니다.", "ERROR-BR-012"),
+    NOT_MATCHED_TITLE_FORMAT(HttpStatus.BAD_REQUEST, "제목은 한글 또는 영어 1~30자를 입력해야합니다.","ERROR-BR-013"),
+    NOT_MATCHED_EXERCISE_TYPE_FORMAT(HttpStatus.BAD_REQUEST,"운동이름은 한글 또는 영어 1~30자를 입력해야합니다" , "ERROR-BR-014"),
+    NOT_MATCHED_EXERCISE_TIME_FORMAT(HttpStatus.BAD_REQUEST,"운동시간은 1 이상이어야합니다.","ERROR-BR-015"),
 
     //UNAUTHORIZED
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다.", "ERROR-UA-000"),
@@ -35,7 +38,9 @@ public enum ResCode {
     NOT_FOUND(HttpStatus.NOT_FOUND, "해당 요청 정보를 찾을 수 없습니다.", "ERROR-NF-000"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.", "ERROR-NF-001")
     ,
-    EXERCISE_NOT_FOUND(HttpStatus.NOT_FOUND,"해당하는 운동을 찾을 수 없습니다.","ERROR-NF-002")
+    EXERCISE_NOT_FOUND(HttpStatus.NOT_FOUND,"해당하는 운동을 찾을 수 없습니다.","ERROR-NF-002"),
+    SCORE_NOT_FOUND(HttpStatus.NOT_FOUND,"해당하는 유저의 스코어를 찾을 수 없습니다.", "ERROR-NF-003"),
+    DAILY_CHANGE_NOT_FOUND(HttpStatus.NOT_FOUND,"해당하는 유저의 일별 스코어변화 기록을 찾을 수 없습니다.", "ERROR-NF-003")
     ,
 
 

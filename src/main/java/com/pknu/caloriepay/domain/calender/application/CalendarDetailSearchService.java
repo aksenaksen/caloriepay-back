@@ -4,9 +4,11 @@ import com.pknu.caloriepay.domain.exercise.dao.ExerciseRecordRepository;
 import com.pknu.caloriepay.domain.exercise.dao.ExerciseTypeRepository;
 import com.pknu.caloriepay.domain.exercise.domain.ExerciseRecord;
 import com.pknu.caloriepay.domain.exercise.domain.ExerciseType;
-import com.pknu.caloriepay.domain.exercise.dto.ResponseExerciseRecordDto;
+import com.pknu.caloriepay.domain.exercise.dto.out.ResponseExerciseRecordDto;
+import com.pknu.caloriepay.domain.exercise.exception.ExerciseNotFoundException;
 import com.pknu.caloriepay.domain.meal.dao.MealRepository;
 import com.pknu.caloriepay.domain.meal.dto.MealDto;
+import com.pknu.caloriepay.global.enums.ResCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,7 +37,7 @@ public class CalendarDetailSearchService {
         return exerciseRecords.stream()
                 .map(exerciseRecord -> {
                     ExerciseType type = exerciseTypeRepository.findById(exerciseRecord.getExerciseTypeId())
-                            .orElseThrow(() -> new RuntimeException("Exercise type not found")); // 예외 처리
+                            .orElseThrow(() -> new ExerciseNotFoundException(ResCode.EXERCISE_NOT_FOUND)); // 예외 처리
 
                     return ResponseExerciseRecordDto.fromEntity(exerciseRecord, type);
                 })

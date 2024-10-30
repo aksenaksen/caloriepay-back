@@ -1,4 +1,4 @@
-package com.pknu.caloriepay.domain.exercise.dto;
+package com.pknu.caloriepay.domain.exercise.dto.in;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

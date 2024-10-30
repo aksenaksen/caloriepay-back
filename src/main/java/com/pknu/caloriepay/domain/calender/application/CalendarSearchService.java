@@ -1,6 +1,6 @@
 package com.pknu.caloriepay.domain.calender.application;
 
-import com.pknu.caloriepay.domain.calender.dto.ResponseCalendarDto;
+import com.pknu.caloriepay.domain.calender.dto.out.ResponseCalendarDto;
 import com.pknu.caloriepay.domain.tier.dao.DailyTierRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

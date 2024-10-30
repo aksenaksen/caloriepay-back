@@ -1,7 +1,6 @@
-package com.pknu.caloriepay.domain.exercise.dto;
+package com.pknu.caloriepay.domain.exercise.dto.in;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;

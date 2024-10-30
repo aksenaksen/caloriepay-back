@@ -1,8 +1,7 @@
-package com.pknu.caloriepay.domain.calender.dto;
+package com.pknu.caloriepay.domain.calender.dto.out;
 
 import com.pknu.caloriepay.domain.tier.domain.DailyTier;
 import com.pknu.caloriepay.domain.tier.domain.Tier;
-import com.pknu.caloriepay.domain.tier.dto.ResponseTier;
 import lombok.Builder;
 import lombok.Getter;
 
