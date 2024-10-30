@@ -4,7 +4,7 @@ import com.pknu.caloriepay.domain.score.dao.DailyCalorieChangeRepository;
 import com.pknu.caloriepay.domain.score.domain.DailyCalorieChange;
 import com.pknu.caloriepay.global.event.DailyCalorieSummaryEventDto;
 import com.pknu.caloriepay.global.event.MonthCalorieSummeryEventDto;
-import com.pknu.caloriepay.domain.score.dto.ResponseDailyCalorieChangeDto;
+import com.pknu.caloriepay.domain.score.dto.out.ResponseDailyCalorieChangeDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;

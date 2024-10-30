@@ -2,7 +2,7 @@ package com.pknu.caloriepay.domain.exercise.application;
 
 import com.pknu.caloriepay.domain.exercise.dao.ExerciseTypeRepository;
 import com.pknu.caloriepay.domain.exercise.domain.ExerciseType;
-import com.pknu.caloriepay.domain.exercise.dto.ResponseExerciseTypeDto;
+import com.pknu.caloriepay.domain.exercise.dto.out.ResponseExerciseTypeDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

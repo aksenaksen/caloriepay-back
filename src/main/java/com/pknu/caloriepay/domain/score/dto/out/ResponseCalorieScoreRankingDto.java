@@ -1,4 +1,4 @@
-package com.pknu.caloriepay.domain.score.dto;
+package com.pknu.caloriepay.domain.score.dto.out;
 
 import com.pknu.caloriepay.domain.score.domain.CalorieScore;
 import com.pknu.caloriepay.domain.user.domain.Member;

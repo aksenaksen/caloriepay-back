@@ -4,16 +4,15 @@ import com.pknu.caloriepay.domain.auth.dto.info.CurrentMemberInfo;
 import com.pknu.caloriepay.domain.score.application.CalorieRankingService;
 import com.pknu.caloriepay.domain.score.application.CalorieScoreService;
 import com.pknu.caloriepay.domain.score.application.DailyCalorieChangeService;
-import com.pknu.caloriepay.domain.score.dto.ResponseCalorieScoreDto;
-import com.pknu.caloriepay.domain.score.dto.ResponseCalorieScoreRankingDto;
-import com.pknu.caloriepay.domain.score.dto.ResponseScoreAndCalorieDto;
+import com.pknu.caloriepay.domain.score.dto.out.ResponseCalorieScoreDto;
+import com.pknu.caloriepay.domain.score.dto.out.ResponseCalorieScoreRankingDto;
+import com.pknu.caloriepay.domain.score.dto.out.ResponseScoreAndCalorieDto;
 import com.pknu.caloriepay.global.dto.BaseRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController

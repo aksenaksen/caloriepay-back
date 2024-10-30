@@ -10,6 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Objects;
+
 @RestControllerAdvice
 @Slf4j
 public class CustomExceptionHandler {
@@ -28,10 +30,26 @@ public class CustomExceptionHandler {
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<BaseRes<String>> handleMethodArgumentNotValidExeption(MethodArgumentNotValidException e){
-        log.error(e.getBindingResult()
-                .getFieldErrors().get(0).getDefaultMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(BaseRes.fail(ResCode.BAD_REQUEST));
+        String errMsg=e.getBindingResult()
+                .getFieldErrors().get(0).getDefaultMessage();
+        log.error(errMsg);
+
+        if (Objects.requireNonNull(errMsg).equals(ResCode.NOT_MATCHED_TITLE_FORMAT.getMessage())){
+            return ResponseEntity.status(ResCode.NOT_MATCHED_TITLE_FORMAT.getHttpStatus())
+                    .body(BaseRes.fail(ResCode.NOT_MATCHED_TITLE_FORMAT));
+        }
+        if (Objects.requireNonNull(errMsg).equals(ResCode.NOT_MATCHED_EXERCISE_TIME_FORMAT.getMessage())){
+            return ResponseEntity.status(ResCode.NOT_MATCHED_TITLE_FORMAT.getHttpStatus())
+                    .body(BaseRes.fail(ResCode.NOT_MATCHED_TITLE_FORMAT));
+        }
+        if (Objects.requireNonNull(errMsg).equals(ResCode.NOT_MATCHED_EXERCISE_TYPE_FORMAT.getMessage())){
+            return ResponseEntity.status(ResCode.NOT_MATCHED_TITLE_FORMAT.getHttpStatus())
+                    .body(BaseRes.fail(ResCode.NOT_MATCHED_TITLE_FORMAT));
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(BaseRes.fail(ResCode.BAD_REQUEST));
+        }
     }
 
     @ExceptionHandler(Exception.class)

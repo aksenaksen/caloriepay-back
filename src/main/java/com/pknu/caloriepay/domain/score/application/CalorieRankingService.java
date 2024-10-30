@@ -3,9 +3,11 @@ package com.pknu.caloriepay.domain.score.application;
 
 import com.pknu.caloriepay.domain.score.dao.CalorieScoreRepository;
 import com.pknu.caloriepay.domain.score.domain.CalorieScore;
-import com.pknu.caloriepay.domain.score.dto.ResponseCalorieScoreRankingDto;
+import com.pknu.caloriepay.domain.score.dto.out.ResponseCalorieScoreRankingDto;
 import com.pknu.caloriepay.domain.user.dao.MemberRepository;
 import com.pknu.caloriepay.domain.user.domain.Member;
+import com.pknu.caloriepay.global.enums.ResCode;
+import com.pknu.caloriepay.global.error.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,7 @@ public class CalorieRankingService {
         return IntStream.rangeClosed(1, calorieScores.size())
                 .mapToObj(i -> {
                     CalorieScore calorieScore = calorieScores.get(i - 1);
-                    Member member = memberRepository.findById(calorieScore.getUserId()).orElseThrow();
+                    Member member = memberRepository.findById(calorieScore.getUserId()).orElseThrow(() ->new CustomException(ResCode.USER_NOT_FOUND));
                     return ResponseCalorieScoreRankingDto.of(calorieScore, member, (long) i);
                 })
                 .toList();
@@ -39,7 +41,7 @@ public class CalorieRankingService {
     public ResponseCalorieScoreRankingDto findUserRankingByUserId(Long userId){
 
         Map<String , Object> calorieScoreMap = calorieScoreRepository.findUserRankingByUserId(userId);
-        Member member = memberRepository.findById(userId).orElseThrow();
+        Member member = memberRepository.findById(userId).orElseThrow(() ->new CustomException(ResCode.USER_NOT_FOUND));
 
         CalorieScore calorieScore= (CalorieScore) calorieScoreMap.get("calorieScore");
         Long ranking = (long) calorieScoreMap.get("ranking");

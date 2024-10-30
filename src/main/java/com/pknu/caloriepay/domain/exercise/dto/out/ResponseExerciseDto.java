@@ -1,4 +1,4 @@
-package com.pknu.caloriepay.domain.exercise.dto;
+package com.pknu.caloriepay.domain.exercise.dto.out;
 
 import com.pknu.caloriepay.domain.exercise.domain.ExerciseType;
 import lombok.Builder;

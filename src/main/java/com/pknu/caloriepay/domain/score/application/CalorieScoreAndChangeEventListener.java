@@ -4,6 +4,8 @@ import com.pknu.caloriepay.domain.score.dao.CalorieScoreRepository;
 import com.pknu.caloriepay.domain.score.dao.DailyCalorieChangeRepository;
 import com.pknu.caloriepay.domain.score.domain.CalorieScore;
 import com.pknu.caloriepay.domain.score.domain.DailyCalorieChange;
+import com.pknu.caloriepay.global.enums.ResCode;
+import com.pknu.caloriepay.global.error.CustomException;
 import com.pknu.caloriepay.global.event.MealEventDto;
 import com.pknu.caloriepay.global.event.UserProfileEventDto;
 import com.pknu.caloriepay.global.event.ExerciseEventDto;
@@ -66,7 +68,7 @@ public class CalorieScoreAndChangeEventListener {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void caloriePlus(ExerciseEventDto exerciseEventDto){
-        DailyCalorieChange calorieChange= dailyCalorieChangeRepository.findByUserId(exerciseEventDto.getUserId()).orElseThrow();
+        DailyCalorieChange calorieChange= dailyCalorieChangeRepository.findByUserId(exerciseEventDto.getUserId()).orElseThrow(() -> new CustomException(ResCode.DAILY_CHANGE_NOT_FOUND));
         calorieChange.plusCalorie(exerciseEventDto.getCalorie());
         dailyCalorieChangeRepository.save(calorieChange);
     }
@@ -74,7 +76,7 @@ public class CalorieScoreAndChangeEventListener {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void calorieMinus(MealEventDto mealEventDto){
-        DailyCalorieChange calorieChange= dailyCalorieChangeRepository.findByUserId(mealEventDto.getUserId()).orElseThrow();
+        DailyCalorieChange calorieChange= dailyCalorieChangeRepository.findByUserId(mealEventDto.getUserId()).orElseThrow(() -> new CustomException(ResCode.DAILY_CHANGE_NOT_FOUND));
         calorieChange.minusCalorie(mealEventDto.getCalorie());
         dailyCalorieChangeRepository.save(calorieChange);
     }

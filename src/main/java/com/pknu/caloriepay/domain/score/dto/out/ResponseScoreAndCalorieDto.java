@@ -1,4 +1,4 @@
-package com.pknu.caloriepay.domain.score.dto;
+package com.pknu.caloriepay.domain.score.dto.out;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
