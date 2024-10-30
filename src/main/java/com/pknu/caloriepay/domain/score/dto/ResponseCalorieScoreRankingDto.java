@@ -1,0 +1,37 @@
+package com.pknu.caloriepay.domain.score.dto;
+
+import com.pknu.caloriepay.domain.score.domain.CalorieScore;
+import com.pknu.caloriepay.domain.user.domain.Member;
+import lombok.Builder;
+import lombok.Getter;
+
+import java.time.LocalDate;
+
+@Builder
+@Getter
+public class ResponseCalorieScoreRankingDto{
+
+    private Long id;
+
+    private Long userId;
+
+    private String name;
+
+    private LocalDate date;
+
+    private Integer score;
+
+    private Long rank;
+
+
+    public static ResponseCalorieScoreRankingDto of(CalorieScore calorieScore, Member member, Long rank){
+        return ResponseCalorieScoreRankingDto.builder()
+                .id(calorieScore.getId())
+                .userId(member.getId())
+                .date(calorieScore.getDate())
+                .score(calorieScore.getScore())
+                .rank(rank)
+                .name(member.getName())
+                .build();
+    }
+}
