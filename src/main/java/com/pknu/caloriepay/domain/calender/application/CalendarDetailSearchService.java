@@ -5,12 +5,16 @@ import com.pknu.caloriepay.domain.exercise.dao.ExerciseTypeRepository;
 import com.pknu.caloriepay.domain.exercise.domain.ExerciseRecord;
 import com.pknu.caloriepay.domain.exercise.domain.ExerciseType;
 import com.pknu.caloriepay.domain.exercise.dto.ResponseExerciseRecordDto;
+import com.pknu.caloriepay.domain.meal.dao.MealRepository;
+import com.pknu.caloriepay.domain.meal.dto.MealDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 
@@ -21,6 +25,7 @@ public class CalendarDetailSearchService {
 
     private final ExerciseRecordRepository exerciseRecordRepository;
     private final ExerciseTypeRepository exerciseTypeRepository;
+    private final MealRepository mealRepository;
 
     @Transactional(readOnly = true)
     public List<ResponseExerciseRecordDto> getExerciseRecordList(Long userId, LocalDate date) {
@@ -34,6 +39,17 @@ public class CalendarDetailSearchService {
 
                     return ResponseExerciseRecordDto.fromEntity(exerciseRecord, type);
                 })
+                .toList();
+    }
+    @Transactional(readOnly = true)
+    public List<MealDto> getMealRecordList(Long userId, LocalDate date){
+
+        LocalDateTime startOfDay = date.atStartOfDay(); // 예: 2023-10-30T00:00:00
+        LocalDateTime endOfDay = date.atTime(LocalTime.MAX); // 예: 2023-10-30T23:59:59.999999999
+
+
+        return mealRepository.findAllByMemberIdAndMealTimeBetween(userId,startOfDay, endOfDay).stream()
+                .map(MealDto::from)
                 .toList();
     }
 }
