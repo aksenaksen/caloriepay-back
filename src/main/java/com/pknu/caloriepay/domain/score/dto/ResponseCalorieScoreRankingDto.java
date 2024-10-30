@@ -7,9 +7,10 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
-@Getter
 @Builder
-public class ResponseCalorieScoreDto {
+@Getter
+public class ResponseCalorieScoreRankingDto{
+
     private Long id;
 
     private Long userId;
@@ -20,14 +21,17 @@ public class ResponseCalorieScoreDto {
 
     private Integer score;
 
-    public static ResponseCalorieScoreDto fromEntity(CalorieScore calorieScore, Member member) {
-        return ResponseCalorieScoreDto.builder()
+    private Long rank;
+
+
+    public static ResponseCalorieScoreRankingDto of(CalorieScore calorieScore, Member member, Long rank){
+        return ResponseCalorieScoreRankingDto.builder()
                 .id(calorieScore.getId())
-                .name(member.getName())
-                .score(calorieScore.getScore())
-                .userId(calorieScore.getUserId())
+                .userId(member.getId())
                 .date(calorieScore.getDate())
+                .score(calorieScore.getScore())
+                .rank(rank)
+                .name(member.getName())
                 .build();
     }
-
 }

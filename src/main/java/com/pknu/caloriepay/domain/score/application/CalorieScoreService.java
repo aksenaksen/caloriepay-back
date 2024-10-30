@@ -2,8 +2,10 @@ package com.pknu.caloriepay.domain.score.application;
 
 import com.pknu.caloriepay.domain.score.dao.CalorieScoreRepository;
 import com.pknu.caloriepay.domain.score.domain.CalorieScore;
-import com.pknu.caloriepay.global.event.DailyCalorieSummaryEventDto;
 import com.pknu.caloriepay.domain.score.dto.ResponseCalorieScoreDto;
+import com.pknu.caloriepay.domain.user.dao.MemberRepository;
+import com.pknu.caloriepay.domain.user.domain.Member;
+import com.pknu.caloriepay.global.event.DailyCalorieSummaryEventDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -12,17 +14,55 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
 public class CalorieScoreService {
 
     private final CalorieScoreRepository calorieScoreRepository;
+    private final MemberRepository memberRepository;
 
-    public ResponseCalorieScoreDto getCalorieScoreByUserIdAndDate(Long userId, LocalDate date){
-        return calorieScoreRepository.findByUserIdAndDate(userId,date)
-                .map(ResponseCalorieScoreDto::fromEntity)
+    public ResponseCalorieScoreDto getCalorieScoreByUserIdAndDate(Long userId){
+        Member member = memberRepository.findById(userId).orElseThrow();
+
+        return calorieScoreRepository.findTopByUserIdOrderByDateDesc(userId)
+                .map((calorieScore) ->ResponseCalorieScoreDto.fromEntity(calorieScore,member))
                 .orElse(null);
+    }
+    public List<ResponseCalorieScoreDto> getCalorieScoreChangeFor5Month(Long userId,Integer offset) {
+        Member member = memberRepository.findById(userId).orElseThrow();
+        LocalDate currentDate = LocalDate.now();
+
+        return IntStream.range(0, offset)
+                .mapToObj(i -> {
+                    LocalDate targetDate = currentDate.minusMonths(i);
+                    return calorieScoreRepository.findLatestScoreByUserIdAndYearAndMonth(userId, targetDate.getYear(), targetDate.getMonthValue())
+                            .map(score -> ResponseCalorieScoreDto.fromEntity(score,member))
+                            .orElse(null);
+                })
+                .toList();
+    }
+
+    @Transactional
+    public void refreshCalorieScoreByUserId(Long userId) {
+        calorieScoreRepository.findByUserIdAndDate(userId, LocalDate.now())
+                .ifPresentOrElse(
+                        calorieScore -> {
+                        },
+                        () -> {
+                            CalorieScore latestScore = calorieScoreRepository.findTopByUserIdOrderByDateDesc(userId)
+                                    .orElseThrow();
+                            calorieScoreRepository.save(
+                                    CalorieScore.builder()
+                                            .userId(latestScore.getUserId())
+                                            .score(latestScore.getScore())
+                                            .date(LocalDate.now())
+                                            .build()
+                            );
+                        }
+                );
     }
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
