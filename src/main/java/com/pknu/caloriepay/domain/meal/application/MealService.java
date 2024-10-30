@@ -11,7 +11,9 @@ import com.pknu.caloriepay.domain.meal.dto.FoodDto;
 import com.pknu.caloriepay.domain.meal.dto.MealDto;
 import com.pknu.caloriepay.global.enums.ResCode;
 import com.pknu.caloriepay.global.error.CustomException;
+import com.pknu.caloriepay.global.event.MealEventDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +27,7 @@ public class MealService {
 
     private final ImageFileRepository imageFileRepository;
     private final MealRepository mealRepository;
-
+    private final ApplicationEventPublisher applicationEventPublisher;
     @Transactional
     public MealDto save(UploadResult res, List<FoodDto> foodList, CurrentMemberInfo memberInfo) {
         LocalDateTime mealTime = imageFileRepository.findById(res.imageFileId())
@@ -52,6 +54,8 @@ public class MealService {
 
         // Meal과 관련된 Food 저장
         Meal result = mealRepository.save(meal);
+
+        applicationEventPublisher.publishEvent(new MealEventDto(meal.getMemberId(), meal.getTotalCalorie()));
 
         return MealDto.from(result);
     }
