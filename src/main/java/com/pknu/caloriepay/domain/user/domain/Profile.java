@@ -13,15 +13,34 @@ import lombok.*;
 public class Profile {
     @Enumerated(EnumType.STRING)
     private Gender gender;
-    private int age;
-    private double height;
-    private double weight;
+    private Integer age;
+    private Double height;
+    private Double weight;
     @Enumerated(EnumType.STRING)
     private Goal goal;
-    private double targetWeight;
+    private Double targetWeight;
     @Enumerated(EnumType.STRING)
     private ActivityLevel activityLevel;
 
     protected Profile() {}
+
+    public void updateAge(int age) {
+        this.age = age;
+    }
+    public void updateHeight(double height) {
+        this.height = height;
+    }
+    public void updateWeight(double weight) {
+        this.weight = weight;
+    }
+    public void updateGoal(Goal goal) {
+        this.goal = goal;
+    }
+    public void updateTargetWeight(double targetWeight) {
+        this.targetWeight = targetWeight;
+    }
+    public void updateActivityLevel(ActivityLevel activityLevel) {
+        this.activityLevel = activityLevel;
+    }
 
 }

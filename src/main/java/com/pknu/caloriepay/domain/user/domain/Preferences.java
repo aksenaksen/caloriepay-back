@@ -9,12 +9,12 @@ import lombok.Getter;
 @Getter
 public class Preferences {
     // 정보 공개 여부
-    private boolean visible;
+    private Boolean visible;
     // 가입 유형
     @Enumerated(EnumType.STRING)
     private JoinType joinType;
     // 회원 정보 등록 여부
-    private boolean isProfileRegistered;
+    private Boolean isProfileRegistered;
 
 
     protected Preferences() {}
@@ -27,5 +27,9 @@ public class Preferences {
 
     public void registerProfile(){
         this.isProfileRegistered = true;
+    }
+
+    public void updateVisible(Boolean visible) {
+        this.visible = visible;
     }
 }

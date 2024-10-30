@@ -44,6 +44,18 @@ public class Member {
         this.profile = profile;
     }
 
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+
+    public void updatePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
 
 
 }
