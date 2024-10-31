@@ -6,12 +6,11 @@ import com.pknu.caloriepay.domain.score.domain.CalorieScore;
 import com.pknu.caloriepay.domain.score.domain.DailyCalorieChange;
 import com.pknu.caloriepay.global.enums.ResCode;
 import com.pknu.caloriepay.global.error.CustomException;
+import com.pknu.caloriepay.global.event.ExerciseEventDto;
 import com.pknu.caloriepay.global.event.MealEventDto;
 import com.pknu.caloriepay.global.event.UserProfileEventDto;
-import com.pknu.caloriepay.global.event.ExerciseEventDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +18,7 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.LocalDate;
+
 
 @Component
 @Slf4j
@@ -66,16 +66,16 @@ public class CalorieScoreAndChangeEventListener {
     }
 
 //    운동 기록시 일별 칼로리 계산
-    @Async("threadPoolTaskExecutor")
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void caloriePlus(ExerciseEventDto exerciseEventDto){
+
         DailyCalorieChange calorieChange= dailyCalorieChangeRepository.findByUserId(exerciseEventDto.getUserId()).orElseThrow(() -> new CustomException(ResCode.DAILY_CHANGE_NOT_FOUND));
         calorieChange.plusCalorie(exerciseEventDto.getCalorie());
         dailyCalorieChangeRepository.save(calorieChange);
     }
 
-    @Async("threadPoolTaskExecutor")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void calorieMinus(MealEventDto mealEventDto){
