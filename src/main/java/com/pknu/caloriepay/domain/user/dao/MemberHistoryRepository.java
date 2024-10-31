@@ -5,9 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface MemberHistoryRepository extends JpaRepository<MemberHistory, Long> {
     Optional<MemberHistory> findByUpdateDate(LocalDate updateDate);
+
+    List<MemberHistory> findByMemberIdOrderByUpdateDateDesc(Long userId);
+
 }
