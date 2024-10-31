@@ -3,6 +3,7 @@ package com.pknu.caloriepay.domain.score.dao;
 import com.pknu.caloriepay.domain.score.domain.CalorieScore;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,4 +16,5 @@ public interface CustomCalorieScoreRepository {
 
     Map<String, Object> findUserRankingByUserId(Long userId);
 
+    Optional<CalorieScore> findHighScoreOfMonthByUserId(Long userId, LocalDate start, LocalDate end);
 }
