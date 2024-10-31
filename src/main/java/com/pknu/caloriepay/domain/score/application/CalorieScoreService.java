@@ -9,6 +9,7 @@ import com.pknu.caloriepay.global.enums.ResCode;
 import com.pknu.caloriepay.global.error.CustomException;
 import com.pknu.caloriepay.global.event.DailyCalorieSummaryEventDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -17,8 +18,10 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.stream.IntStream;
+
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +49,16 @@ public class CalorieScoreService {
                             .orElse(null);
                 })
                 .toList();
+    }
+
+    public ResponseCalorieScoreDto getHighCalorieScoreOfMonth(Long userId, LocalDate date){
+        Member member = memberRepository.findById(userId).orElseThrow(() ->new CustomException(ResCode.USER_NOT_FOUND));
+
+        LocalDate startOfMonth = date.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate endOfMonth = date.with(TemporalAdjusters.lastDayOfMonth());
+
+        return ResponseCalorieScoreDto.fromEntity(calorieScoreRepository.findHighScoreOfMonthByUserId(userId,startOfMonth,endOfMonth).orElseThrow( () ->
+                new CustomException(ResCode.SCORE_NOT_FOUND)),member);
     }
 
     @Transactional

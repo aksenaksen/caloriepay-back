@@ -7,6 +7,7 @@ import com.querydsl.jpa.JPQLQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -73,5 +74,21 @@ public class CustomCalorieScoreRepositoryImpl implements CustomCalorieScoreRepos
         result.put("ranking", finalRanking);
 
         return result;
+    }
+    @Override
+    public Optional<CalorieScore> findHighScoreOfMonthByUserId(Long userId, LocalDate start, LocalDate end){
+        QCalorieScore qs = QCalorieScore.calorieScore;
+
+        return Optional.ofNullable(
+                jpqlQueryFactory
+                        .selectFrom(qs)
+                        .where(qs.userId.eq(userId)
+                                .and(qs.date.between(start, end))
+                        )
+                        .orderBy(qs.score.desc())
+                        .limit(1)
+                        .fetchOne()
+        );
+
     }
 }

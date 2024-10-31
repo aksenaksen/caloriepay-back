@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -54,5 +55,12 @@ public class CalorieScoreApi {
         ResponseCalorieScoreRankingDto calorieScoreRankingDto = calorieRankingService.findUserRankingByUserId(memberInfo.memberId());
         return ResponseEntity.ok(BaseRes.success(calorieScoreRankingDto));
     }
+
+    @GetMapping("/month")
+    public ResponseEntity<BaseRes<ResponseCalorieScoreDto>> getHighCalorieScoreOfMonth(@AuthenticationPrincipal CurrentMemberInfo memberInfo, @RequestParam(name = "date")LocalDate date){
+        ResponseCalorieScoreDto dto = calorieScoreService.getHighCalorieScoreOfMonth(memberInfo.memberId(), date);
+        return ResponseEntity.ok(BaseRes.success(dto));
+    }
+
 
 }
