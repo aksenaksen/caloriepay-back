@@ -1,8 +1,10 @@
 package com.pknu.caloriepay.domain.user.application;
 
 import com.pknu.caloriepay.domain.auth.dto.info.CurrentMemberInfo;
+import com.pknu.caloriepay.domain.user.dao.MemberHistoryRepository;
 import com.pknu.caloriepay.domain.user.dao.MemberRepository;
 import com.pknu.caloriepay.domain.user.domain.Member;
+import com.pknu.caloriepay.domain.user.domain.MemberHistory;
 import com.pknu.caloriepay.domain.user.dto.MemberDto;
 import com.pknu.caloriepay.domain.user.dto.request.MemberUpdateRequest;
 import com.pknu.caloriepay.global.enums.ResCode;
@@ -11,11 +13,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final MemberHistoryRepository memberHistoryRepository;
+    private final MemberHistoryService memberHistoryService;
 
     public MemberDto getMemberInfo(CurrentMemberInfo memberInfo){
         // Member 조회
@@ -37,6 +44,7 @@ public class MemberService {
                         throw new CustomException(ResCode.DUPLICATE_USER_EMAIL);
                     });
             member.updateEmail(updateRequest.getEmail());
+            memberHistoryService.recordMemberHistory(member);
         }
         // 닉네임 중복 검사
         if (updateRequest.getNickname() != null && !updateRequest.getNickname().equals(member.getNickname())) {
@@ -45,6 +53,7 @@ public class MemberService {
                         throw new CustomException(ResCode.DUPLICATE_USER_NICK);
                     });
             member.updateNickname(updateRequest.getNickname());
+            memberHistoryService.recordMemberHistory(member);
         }
 
         // 전화번호 중복 검사
@@ -54,15 +63,15 @@ public class MemberService {
                         throw new CustomException(ResCode.DUPLICATE_USER_PHONE);
                     });
             member.updatePhoneNumber(updateRequest.getPhoneNumber());
+            memberHistoryService.recordMemberHistory(member);
         }
-        if (updateRequest.getAge() != null) member.getProfile().updateAge(updateRequest.getAge());
-        if (updateRequest.getHeight() != null) member.getProfile().updateHeight(updateRequest.getHeight());
-        if (updateRequest.getWeight() != null) member.getProfile().updateWeight(updateRequest.getWeight());
-        if (updateRequest.getTargetWeight() != null) member.getProfile().updateTargetWeight(updateRequest.getTargetWeight());
-        if (updateRequest.getGoal() != null) member.getProfile().updateGoal(updateRequest.getGoal());
-        if (updateRequest.getActivityLevel() != null) member.getProfile().updateActivityLevel(updateRequest.getActivityLevel());
-        if (updateRequest.getVisible() != null) member.getPreferences().updateVisible(updateRequest.getVisible());
-
+        if (updateRequest.getAge() != null) member.getProfile().updateAge(updateRequest.getAge());memberHistoryService.recordMemberHistory(member);
+        if (updateRequest.getHeight() != null) member.getProfile().updateHeight(updateRequest.getHeight());memberHistoryService.recordMemberHistory(member);
+        if (updateRequest.getWeight() != null) member.getProfile().updateWeight(updateRequest.getWeight());memberHistoryService.recordMemberHistory(member);
+        if (updateRequest.getTargetWeight() != null) member.getProfile().updateTargetWeight(updateRequest.getTargetWeight());memberHistoryService.recordMemberHistory(member);
+        if (updateRequest.getGoal() != null) member.getProfile().updateGoal(updateRequest.getGoal());memberHistoryService.recordMemberHistory(member);
+        if (updateRequest.getActivityLevel() != null) member.getProfile().updateActivityLevel(updateRequest.getActivityLevel());memberHistoryService.recordMemberHistory(member);
+        if (updateRequest.getVisible() != null) member.getPreferences().updateVisible(updateRequest.getVisible());memberHistoryService.recordMemberHistory(member);
         return MemberDto.from(member);
     }
 }

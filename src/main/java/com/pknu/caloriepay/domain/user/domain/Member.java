@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Builder
@@ -36,6 +38,21 @@ public class Member {
                 .nickname(nickname)
                 .profile(profile)
                 .preferences(preferences)
+                .build();
+    }
+
+    // MemberHistory 엔티티 생성 메서드
+    public MemberHistory toHistory() {
+        return MemberHistory.builder()
+                .memberId(this.id)
+                .updateDate(LocalDate.now()) // 현재 날짜를 업데이트 날짜로 설정
+                .email(this.email)
+                .nickname(this.nickname)
+                .age(this.profile.getAge())
+                .weight(this.profile.getWeight())
+                .height(this.profile.getHeight())
+                .goal(this.profile.getGoal())
+                .activityLevel(this.profile.getActivityLevel())
                 .build();
     }
 
