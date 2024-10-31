@@ -7,6 +7,7 @@ import com.pknu.caloriepay.global.event.MonthCalorieSummeryEventDto;
 import com.pknu.caloriepay.domain.score.dto.out.ResponseDailyCalorieChangeDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +28,10 @@ public class DailyCalorieChangeService {
                 .orElse(null); // 값이 없을 경우 null을 반환
     }
 //  일별 칼로리 정산
+    @Async("threadPoolTaskExecutor")
     @Transactional
 //    @Scheduled(cron = "0 1 0 * * *")
-    @Scheduled(cron = "0 */3 * * * *")
+    @Scheduled(cron = "0 */3 * * * *",zone = "Asia/Seoul")
     public void dailyCalorieSummary() {
         List<DailyCalorieChange> dailyCalorieChangeDtoList = dailyCalorieChangeRepository.findAll();
         DailyCalorieSummaryEventDto resultDto=new DailyCalorieSummaryEventDto(dailyCalorieChangeDtoList
@@ -47,8 +49,9 @@ public class DailyCalorieChangeService {
     }
 
 //  월별칼로리정산
+    @Async("threadPoolTaskExecutor")
     @Transactional
-    @Scheduled(cron = "0 5 0 1 * *")
+    @Scheduled(cron = "0 5 0 1 * *" ,zone = "Asia/Seoul")
     public void totalCalorieSummary() {
         List<DailyCalorieChange> dailyCalorieChangeDtoList = dailyCalorieChangeRepository.findAll();
         MonthCalorieSummeryEventDto resultDto = new MonthCalorieSummeryEventDto(dailyCalorieChangeDtoList

@@ -9,6 +9,7 @@ import com.pknu.caloriepay.global.enums.ResCode;
 import com.pknu.caloriepay.global.error.CustomException;
 import com.pknu.caloriepay.global.event.DailyCalorieSummaryEventDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,6 +67,8 @@ public class CalorieScoreService {
                         }
                 );
     }
+
+    @Async("threadPoolTaskExecutor")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void calculateScore(DailyCalorieSummaryEventDto eventDto) {
