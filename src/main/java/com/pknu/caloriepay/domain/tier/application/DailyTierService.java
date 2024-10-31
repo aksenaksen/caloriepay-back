@@ -1,10 +1,11 @@
 package com.pknu.caloriepay.domain.tier.application;
 
-import com.pknu.caloriepay.global.event.DailyCalorieSummaryEventDto;
 import com.pknu.caloriepay.domain.tier.dao.DailyTierRepository;
 import com.pknu.caloriepay.domain.tier.domain.DailyTier;
 import com.pknu.caloriepay.domain.tier.domain.Tier;
+import com.pknu.caloriepay.domain.tier.dto.out.ResponseDailyTierOfMonth;
 import com.pknu.caloriepay.domain.tier.dto.out.ResponseTier;
+import com.pknu.caloriepay.global.event.DailyCalorieSummaryEventDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -15,6 +16,8 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -43,6 +46,13 @@ public class DailyTierService{
                     .date(LocalDate.now().minusDays(1)) // 어제 날짜
                     .build()); // DailyTier 저장
         });
+    }
+
+    public List<ResponseDailyTierOfMonth> getDailyTierOfMonth(Long userId, LocalDate date){
+        LocalDate startOfMonth = date.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate endOfMonth = date.with(TemporalAdjusters.lastDayOfMonth());
+
+        return dailyTierRepository.countByTierGroupByUserId(userId,startOfMonth,endOfMonth);
     }
 
 
