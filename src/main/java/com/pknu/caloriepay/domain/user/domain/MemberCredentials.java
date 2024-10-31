@@ -31,5 +31,9 @@ public class MemberCredentials {
                 .build();
     }
 
+    public void updatePassword(String encodedPassword) {
+        this.encodedPassword = encodedPassword;
+    }
+
 
 }

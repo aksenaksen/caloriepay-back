@@ -23,6 +23,7 @@ public class MemberJoinService {
     private final PasswordEncoder passwordEncoder;
     private final MemberCredentialsRepository memberCredentialsRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final MemberHistoryService memberHistoryService;
 
     @Transactional
     public Member joinMember(JoinRequestDto joinRequestDto) {
@@ -69,6 +70,7 @@ public class MemberJoinService {
         // Member의 profile 업데이트
         member.getPreferences().registerProfile();
         member.updateProfile(profile);
+        memberHistoryService.recordMemberHistory(member);
 
         UserProfileEventDto event = UserProfileEventDto.builder()
                 .userId(member.getId())
