@@ -30,8 +30,7 @@ public class DailyCalorieChangeService {
 //  일별 칼로리 정산
     @Async("threadPoolTaskExecutor")
     @Transactional
-//    @Scheduled(cron = "0 1 0 * * *")
-    @Scheduled(cron = "0 */3 * * * *",zone = "Asia/Seoul")
+    @Scheduled(cron = "0 1 0 * * *")
     public void dailyCalorieSummary() {
         List<DailyCalorieChange> dailyCalorieChangeDtoList = dailyCalorieChangeRepository.findAll();
         DailyCalorieSummaryEventDto resultDto=new DailyCalorieSummaryEventDto(dailyCalorieChangeDtoList
