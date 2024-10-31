@@ -1,10 +1,10 @@
 package com.pknu.caloriepay.domain.tier.application;
 
-import com.pknu.caloriepay.global.event.MonthCalorieSummeryEventDto;
 import com.pknu.caloriepay.domain.tier.dao.MonthlyTierRepository;
 import com.pknu.caloriepay.domain.tier.domain.MonthlyTier;
 import com.pknu.caloriepay.domain.tier.domain.Tier;
 import com.pknu.caloriepay.domain.tier.dto.out.ResponseTier;
+import com.pknu.caloriepay.global.event.MonthCalorieSummeryEventDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
