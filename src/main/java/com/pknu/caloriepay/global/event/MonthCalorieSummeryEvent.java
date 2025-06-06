@@ -8,6 +8,6 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class DailyCalorieSummaryEventDto {
+public class MonthCalorieSummeryEvent {
     private List<ResponseDailyCalorieChangeDto> dailyCalorieChangeDtoList;
 }

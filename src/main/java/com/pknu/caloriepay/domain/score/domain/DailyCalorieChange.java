@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 @Entity
 @Getter
 @Builder
@@ -45,6 +46,13 @@ public class DailyCalorieChange {
     public void resetCalorie(){
         this.remainCalorie = dailyRecommendedCalorie;
     }
+
+    public void changeCalorie(){
+        calculateTotalCalorie();
+        resetCalorie();
+    }
+
+
 
     public void resetRecommendedCalorie(Profile profile) {
         double bmr = calculateBMR(profile);

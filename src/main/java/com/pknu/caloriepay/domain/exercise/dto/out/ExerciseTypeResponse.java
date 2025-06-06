@@ -2,20 +2,16 @@ package com.pknu.caloriepay.domain.exercise.dto.out;
 
 import com.pknu.caloriepay.domain.exercise.domain.ExerciseType;
 import lombok.Builder;
-import lombok.Getter;
 
-@Getter
 @Builder
-public class ResponseExerciseTypeDto {
+public record ExerciseTypeResponse(
+        Long id,
+        String name,
+        double averageCaloriesPerMinute
+) {
 
-    private Long id;
-
-    private String name;
-
-    private double averageCaloriesPerMinute;
-
-    public static ResponseExerciseTypeDto fromEntity(ExerciseType exerciseType){
-        return ResponseExerciseTypeDto.builder()
+    public static ExerciseTypeResponse fromEntity(ExerciseType exerciseType){
+        return ExerciseTypeResponse.builder()
                 .id(exerciseType.getId())
                 .name(exerciseType.getName())
                 .averageCaloriesPerMinute(exerciseType.getAverageCaloriesPerMinute())

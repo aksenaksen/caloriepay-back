@@ -2,8 +2,8 @@ package com.pknu.caloriepay.domain.score.application;
 
 import com.pknu.caloriepay.domain.score.dao.DailyCalorieChangeRepository;
 import com.pknu.caloriepay.domain.score.domain.DailyCalorieChange;
-import com.pknu.caloriepay.global.event.DailyCalorieSummaryEventDto;
-import com.pknu.caloriepay.global.event.MonthCalorieSummeryEventDto;
+import com.pknu.caloriepay.global.event.DailyCalorieSummaryEvent;
+import com.pknu.caloriepay.global.event.MonthCalorieSummeryEvent;
 import com.pknu.caloriepay.domain.score.dto.out.ResponseDailyCalorieChangeDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -33,14 +33,14 @@ public class DailyCalorieChangeService {
     @Scheduled(cron = "0 1 0 * * *")
     public void dailyCalorieSummary() {
         List<DailyCalorieChange> dailyCalorieChangeDtoList = dailyCalorieChangeRepository.findAll();
-        DailyCalorieSummaryEventDto resultDto=new DailyCalorieSummaryEventDto(dailyCalorieChangeDtoList
+
+        DailyCalorieSummaryEvent resultDto=new DailyCalorieSummaryEvent(dailyCalorieChangeDtoList
                 .stream()
                 .map(ResponseDailyCalorieChangeDto::fromEntity)
                 .toList());
 
         dailyCalorieChangeDtoList.forEach(calorieChange -> {
-            calorieChange.calculateTotalCalorie();
-            calorieChange.resetCalorie();
+            calorieChange.changeCalorie();
             dailyCalorieChangeRepository.save(calorieChange);
         });
 
@@ -53,7 +53,7 @@ public class DailyCalorieChangeService {
     @Scheduled(cron = "0 5 0 1 * *" ,zone = "Asia/Seoul")
     public void totalCalorieSummary() {
         List<DailyCalorieChange> dailyCalorieChangeDtoList = dailyCalorieChangeRepository.findAll();
-        MonthCalorieSummeryEventDto resultDto = new MonthCalorieSummeryEventDto(dailyCalorieChangeDtoList
+        MonthCalorieSummeryEvent resultDto = new MonthCalorieSummeryEvent(dailyCalorieChangeDtoList
                 .stream()
                 .map(ResponseDailyCalorieChangeDto::fromEntity)
                 .toList());

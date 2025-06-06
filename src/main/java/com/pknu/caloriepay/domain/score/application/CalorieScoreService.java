@@ -7,9 +7,8 @@ import com.pknu.caloriepay.domain.user.dao.MemberRepository;
 import com.pknu.caloriepay.domain.user.domain.Member;
 import com.pknu.caloriepay.global.enums.ResCode;
 import com.pknu.caloriepay.global.error.CustomException;
-import com.pknu.caloriepay.global.event.DailyCalorieSummaryEventDto;
+import com.pknu.caloriepay.global.event.DailyCalorieSummaryEvent;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -84,7 +83,7 @@ public class CalorieScoreService {
     @Async("threadPoolTaskExecutor")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void calculateScore(DailyCalorieSummaryEventDto eventDto) {
+    public void calculateScore(DailyCalorieSummaryEvent eventDto) {
         eventDto.getDailyCalorieChangeDtoList().forEach(dto -> {
             CalorieScore existingScore = calorieScoreRepository.findByUserIdAndDate(dto.getUserId(), LocalDate.now().minusDays(1))
                     .orElseThrow(() -> new CustomException(ResCode.SCORE_NOT_FOUND));

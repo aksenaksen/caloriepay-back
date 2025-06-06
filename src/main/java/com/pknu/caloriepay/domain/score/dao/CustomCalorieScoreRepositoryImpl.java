@@ -2,9 +2,15 @@ package com.pknu.caloriepay.domain.score.dao;
 
 import com.pknu.caloriepay.domain.score.domain.CalorieScore;
 import com.pknu.caloriepay.domain.score.domain.QCalorieScore;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.JPQLQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
@@ -15,21 +21,41 @@ public class CustomCalorieScoreRepositoryImpl implements CustomCalorieScoreRepos
 
     private final JPQLQueryFactory jpqlQueryFactory;
 
-    @Override
-    public List<CalorieScore> findLatestScoresByUserOrderByScoreDesc(Pageable pageable) {
-        QCalorieScore qs = QCalorieScore.calorieScore;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-        return jpqlQueryFactory
-                .selectFrom(qs)
-                .where(qs.date.in(
-                        JPAExpressions.select(qs.date.max())
-                                .from(qs)
-                                .groupBy(qs.userId)
-                ))
-                .orderBy(qs.score.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+
+//    @Override
+//    public List<CalorieScore> findLatestScoresByUserOrderByScoreDesc(Pageable pageable) {
+//        QCalorieScore qs = QCalorieScore.calorieScore;
+//        QCalorieScore subQs = new QCalorieScore("subQs");
+//
+//        return jpqlQueryFactory
+//                .selectFrom(qs)
+//                .where(qs.date.eq(
+//                        JPAExpressions.select(subQs.date.max())  // 최신 날짜
+//                                .from(subQs)
+//                                .where(subQs.userId.eq(qs.userId)) // 같은 userId에 대해 최신 날짜
+//                ))
+//                .orderBy(qs.score.desc())  // 점수 내림차순 정렬
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .fetch();
+//    }
+
+
+
+    public List<CalorieScore> findLatestScoresByUserOrderByScoreDesc(Pageable pageable) {
+        String sql = "SELECT * FROM ( " +
+                "SELECT cs.*, ROW_NUMBER() OVER (PARTITION BY cs.user_id ORDER BY cs.date DESC) AS row_num " +
+                "FROM calorie_score cs) AS sub " +
+                "WHERE sub.row_num = 1 " +
+                "ORDER BY sub.score DESC";
+
+        Query query = entityManager.createNativeQuery(sql, CalorieScore.class);
+        query.setFirstResult((int) pageable.getOffset());
+        query.setMaxResults(pageable.getPageSize());
+        return query.getResultList();
     }
 
     @Override

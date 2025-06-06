@@ -1,13 +1,11 @@
 package com.pknu.caloriepay.domain.calender.api;
 
 import com.pknu.caloriepay.domain.auth.dto.info.CurrentMemberInfo;
-import com.pknu.caloriepay.domain.calender.application.CalendarDetailSearchService;
+import com.pknu.caloriepay.domain.calender.application.CalendarService;
 import com.pknu.caloriepay.domain.calender.application.CalendarSearchService;
 import com.pknu.caloriepay.domain.calender.dto.out.ResponseCalendarDto;
-import com.pknu.caloriepay.domain.calender.dto.out.ResponseCalenderDetailDto;
+import com.pknu.caloriepay.domain.calender.dto.out.CalendarDetailResponse;
 import com.pknu.caloriepay.domain.calender.exception.StartIsAfterEndDateException;
-import com.pknu.caloriepay.domain.exercise.dto.out.ResponseExerciseRecordDto;
-import com.pknu.caloriepay.domain.meal.dto.MealDto;
 import com.pknu.caloriepay.global.dto.BaseRes;
 import com.pknu.caloriepay.global.enums.ResCode;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +24,7 @@ import java.util.List;
 @Validated
 public class CalendarApi {
 
-    private final CalendarDetailSearchService calendarDetailSearchService;
+    private final CalendarService calendarService;
     private final CalendarSearchService calendarSearchService;
     @GetMapping("")
     public ResponseEntity<BaseRes<List<ResponseCalendarDto>>> getCalendarByMemberId(
@@ -37,19 +35,19 @@ public class CalendarApi {
         if (start.isAfter(end)){
             throw new StartIsAfterEndDateException(ResCode.START_IS_AFTER_END_DATE);
         }
+
         List<ResponseCalendarDto> calendarDtoList = calendarSearchService.getCalendarByUserIdAndDate(memberInfo.memberId(), start,end);
 
         return ResponseEntity.ok(BaseRes.success(calendarDtoList));
     }
 
     @GetMapping("/detail")
-    public ResponseEntity<BaseRes<ResponseCalenderDetailDto>> getCalenderDetailByMemberId(
+    public ResponseEntity<BaseRes<CalendarDetailResponse>> getCalenderDetailByMemberId(
             @AuthenticationPrincipal CurrentMemberInfo memberInfo,
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
 
-        List<ResponseExerciseRecordDto> exerciseRecordList = calendarDetailSearchService.getExerciseRecordList(memberInfo.memberId(), date);
-        List<MealDto> mealDtoList = calendarDetailSearchService.getMealRecordList(memberInfo.memberId(),date);
+        CalendarDetailResponse response = calendarService.findCalendarDetail(memberInfo.memberId(), date);
 
-        return ResponseEntity.ok(BaseRes.success(new ResponseCalenderDetailDto(mealDtoList,exerciseRecordList)));
+        return ResponseEntity.ok(BaseRes.success(response));
     }
 }

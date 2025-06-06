@@ -1,6 +1,5 @@
 package com.pknu.caloriepay.domain.calender.dto.out;
 
-import com.pknu.caloriepay.domain.exercise.dto.out.ResponseExerciseRecordDto;
 import com.pknu.caloriepay.domain.meal.dto.MealDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +10,9 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @ToString
-public class ResponseCalenderDetailDto {
+public class CalendarDetailResponse {
 
     private List<MealDto> mealRecords;
-    private List<ResponseExerciseRecordDto> exerciseRecords;
+    private List<ExerciseAndType> exerciseRecords;
 
 }

@@ -6,7 +6,7 @@ import com.pknu.caloriepay.domain.score.domain.CalorieScore;
 import com.pknu.caloriepay.domain.score.domain.DailyCalorieChange;
 import com.pknu.caloriepay.global.enums.ResCode;
 import com.pknu.caloriepay.global.error.CustomException;
-import com.pknu.caloriepay.global.event.ExerciseEventDto;
+import com.pknu.caloriepay.domain.exercise.domain.ExerciseRecordEvent;
 import com.pknu.caloriepay.global.event.MealEventDto;
 import com.pknu.caloriepay.global.event.UserProfileEventDto;
 import lombok.RequiredArgsConstructor;
@@ -69,7 +69,7 @@ public class CalorieScoreAndChangeEventListener {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void caloriePlus(ExerciseEventDto exerciseEventDto){
+    public void caloriePlus(ExerciseRecordEvent exerciseEventDto){
 
         DailyCalorieChange calorieChange= dailyCalorieChangeRepository.findByUserId(exerciseEventDto.getUserId()).orElseThrow(() -> new CustomException(ResCode.DAILY_CHANGE_NOT_FOUND));
         calorieChange.plusCalorie(exerciseEventDto.getCalorie());

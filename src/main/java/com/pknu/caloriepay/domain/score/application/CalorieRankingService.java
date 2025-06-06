@@ -9,6 +9,7 @@ import com.pknu.caloriepay.domain.user.domain.Member;
 import com.pknu.caloriepay.global.enums.ResCode;
 import com.pknu.caloriepay.global.error.CustomException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+import static com.pknu.caloriepay.global.config.RedisCacheConfig.RANK_CACHE;
+
 @Service
 @RequiredArgsConstructor
 public class CalorieRankingService {
@@ -24,6 +27,7 @@ public class CalorieRankingService {
     private final CalorieScoreRepository calorieScoreRepository;
     private final MemberRepository memberRepository;
 
+    @Cacheable(value = RANK_CACHE,key = "'latest'",cacheManager = "caloriePayCacheManager")
     @Transactional(readOnly = true)
     public List<ResponseCalorieScoreRankingDto> getLatestScoreRanking() {
         List<CalorieScore> calorieScores = calorieScoreRepository.findLatestScoresByUserOrderByScoreDesc(PageRequest.of(0, 100));
@@ -37,6 +41,7 @@ public class CalorieRankingService {
                 .toList();
     }
 
+
     @Transactional(readOnly = true)
     public ResponseCalorieScoreRankingDto findUserRankingByUserId(Long userId){
 
@@ -49,7 +54,7 @@ public class CalorieRankingService {
 
 
         int perRank = (int) ((double) ranking / countMember * 100);
-        ResponseCalorieScoreRankingDto responseCalorieScoreRankingDto=ResponseCalorieScoreRankingDto.of(calorieScore,member, ranking);
+        ResponseCalorieScoreRankingDto responseCalorieScoreRankingDto = ResponseCalorieScoreRankingDto.of(calorieScore,member, ranking);
         responseCalorieScoreRankingDto.updatePerRank(perRank);
 
         return responseCalorieScoreRankingDto;

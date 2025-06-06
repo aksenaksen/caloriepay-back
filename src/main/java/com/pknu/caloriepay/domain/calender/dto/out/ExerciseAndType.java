@@ -1,7 +1,8 @@
-package com.pknu.caloriepay.domain.exercise.dto.out;
+package com.pknu.caloriepay.domain.calender.dto.out;
 
 
-import com.pknu.caloriepay.domain.exercise.domain.ExerciseRecord;
+import com.pknu.caloriepay.domain.exercise.domain.Duration;
+import com.pknu.caloriepay.domain.exercise.domain.Exercise;
 import com.pknu.caloriepay.domain.exercise.domain.ExerciseType;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 
 @Getter
 @Builder
-public class ResponseExerciseRecordDto {
+public class ExerciseAndType {
 
 
     private Long id;
@@ -21,14 +22,14 @@ public class ResponseExerciseRecordDto {
 
     private String exerciseTypeName;
 
-    private Integer duration;
+    private Duration duration;
 
     private double caloriesBurned;
 
     private LocalDate date;
 
-    public static ResponseExerciseRecordDto fromEntity(ExerciseRecord exerciseRecord, ExerciseType type){
-        return ResponseExerciseRecordDto.builder()
+    public static ExerciseAndType fromEntity(Exercise exerciseRecord, ExerciseType type){
+        return ExerciseAndType.builder()
                 .id(exerciseRecord.getId())
                 .userId(exerciseRecord.getUserId())
                 .title(exerciseRecord.getTitle())

@@ -7,9 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class ResponseDailyTierOfMonth {
+
     Tier tier;
-
     Long amount;
-
 
 }

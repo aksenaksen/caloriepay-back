@@ -21,8 +21,16 @@ public class DailyTier {
 
     private Long userId;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Tier tier;
 
     private LocalDate date;
+
+    public static DailyTier of(Long userId, Tier tier, LocalDate date) {
+        return DailyTier.builder()
+                .userId(userId)
+                .tier(tier)
+                .date(date)
+                .build();
+    }
 }
