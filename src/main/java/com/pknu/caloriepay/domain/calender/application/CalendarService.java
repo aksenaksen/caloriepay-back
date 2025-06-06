@@ -1,6 +1,7 @@
 package com.pknu.caloriepay.domain.calender.application;
 
 import com.pknu.caloriepay.domain.calender.dto.out.CalendarDetailResponse;
+import com.pknu.caloriepay.domain.calender.dto.out.ResponseCalendarDto;
 import com.pknu.caloriepay.domain.exercise.application.ExerciseFinder;
 import com.pknu.caloriepay.domain.exercise.application.ExerciseTypeFinder;
 import com.pknu.caloriepay.domain.exercise.domain.Exercise;
@@ -8,6 +9,7 @@ import com.pknu.caloriepay.domain.exercise.domain.ExerciseType;
 import com.pknu.caloriepay.domain.calender.dto.out.ExerciseAndType;
 import com.pknu.caloriepay.domain.meal.dao.MealRepository;
 import com.pknu.caloriepay.domain.meal.dto.MealDto;
+import com.pknu.caloriepay.domain.tier.application.DailyTierFinder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,11 +29,20 @@ public class CalendarService {
     private final MealRepository mealRepository;
     private final ExerciseFinder exerciseFinder;
     private final ExerciseTypeFinder exerciseTypeFinder;
+    private final DailyTierFinder dailyTierFinder;
 
     @Transactional(readOnly = true)
     public CalendarDetailResponse findCalendarDetail(Long userId, LocalDate date){
         return new CalendarDetailResponse(findMealRecordList(userId, date), findExerciseList(userId,date));
     }
+
+    @Transactional(readOnly = true)
+    public List<ResponseCalendarDto> getCalendarByUserIdAndDate(Long userId, LocalDate start, LocalDate end){
+        return dailyTierFinder.findByDate(userId,start,end).stream()
+                .map(ResponseCalendarDto::fromEntity)
+                .toList();
+    }
+
 
     private List<ExerciseAndType> findExerciseList(Long userId, LocalDate date) {
 

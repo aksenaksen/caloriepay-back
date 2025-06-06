@@ -2,7 +2,6 @@ package com.pknu.caloriepay.domain.calender.api;
 
 import com.pknu.caloriepay.domain.auth.dto.info.CurrentMemberInfo;
 import com.pknu.caloriepay.domain.calender.application.CalendarService;
-import com.pknu.caloriepay.domain.calender.application.CalendarSearchService;
 import com.pknu.caloriepay.domain.calender.dto.out.ResponseCalendarDto;
 import com.pknu.caloriepay.domain.calender.dto.out.CalendarDetailResponse;
 import com.pknu.caloriepay.domain.calender.exception.StartIsAfterEndDateException;
@@ -25,7 +24,7 @@ import java.util.List;
 public class CalendarApi {
 
     private final CalendarService calendarService;
-    private final CalendarSearchService calendarSearchService;
+
     @GetMapping("")
     public ResponseEntity<BaseRes<List<ResponseCalendarDto>>> getCalendarByMemberId(
             @AuthenticationPrincipal CurrentMemberInfo memberInfo,
@@ -36,7 +35,7 @@ public class CalendarApi {
             throw new StartIsAfterEndDateException(ResCode.START_IS_AFTER_END_DATE);
         }
 
-        List<ResponseCalendarDto> calendarDtoList = calendarSearchService.getCalendarByUserIdAndDate(memberInfo.memberId(), start,end);
+        List<ResponseCalendarDto> calendarDtoList = calendarService.getCalendarByUserIdAndDate(memberInfo.memberId(), start,end);
 
         return ResponseEntity.ok(BaseRes.success(calendarDtoList));
     }

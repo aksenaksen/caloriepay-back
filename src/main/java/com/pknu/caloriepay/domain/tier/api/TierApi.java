@@ -1,7 +1,7 @@
 package com.pknu.caloriepay.domain.tier.api;
 
 import com.pknu.caloriepay.domain.auth.dto.info.CurrentMemberInfo;
-import com.pknu.caloriepay.domain.tier.application.DailyTierService;
+import com.pknu.caloriepay.domain.tier.application.DailyTierFinder;
 import com.pknu.caloriepay.domain.tier.application.MonthlyTierService;
 import com.pknu.caloriepay.domain.tier.dto.out.ResponseDailyTierOfMonth;
 import com.pknu.caloriepay.domain.tier.dto.out.ResponseTier;
@@ -23,7 +23,7 @@ import java.util.List;
 public class TierApi {
 
     private final MonthlyTierService monthlyTierService;
-    private final DailyTierService dailyTierService;
+    private final DailyTierFinder dailyTierService;
 
     @GetMapping("/month")
     public ResponseEntity<BaseRes<ResponseTier>> getMonthTier(@AuthenticationPrincipal CurrentMemberInfo currentMemberInfo, @RequestParam("year") Long year, @RequestParam Long month){
