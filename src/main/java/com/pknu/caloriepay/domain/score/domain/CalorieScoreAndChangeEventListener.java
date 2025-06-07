@@ -1,9 +1,7 @@
-package com.pknu.caloriepay.domain.score.application;
+package com.pknu.caloriepay.domain.score.domain;
 
 import com.pknu.caloriepay.domain.score.dao.CalorieScoreRepository;
 import com.pknu.caloriepay.domain.score.dao.DailyCalorieChangeRepository;
-import com.pknu.caloriepay.domain.score.domain.CalorieScore;
-import com.pknu.caloriepay.domain.score.domain.DailyCalorieChange;
 import com.pknu.caloriepay.global.enums.ResCode;
 import com.pknu.caloriepay.global.error.CustomException;
 import com.pknu.caloriepay.domain.exercise.domain.ExerciseRecordEvent;

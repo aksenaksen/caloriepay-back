@@ -9,15 +9,15 @@ import java.time.LocalDate;
 
 @Getter
 @Builder
-public class ResponseCalendarDto {
+public class CalendarResponse {
 
     private Long id;
     private Long userId;
     private Tier tier;
     private LocalDate date;
 
-    public static ResponseCalendarDto fromEntity(DailyTier tier){
-        return ResponseCalendarDto.builder()
+    public static CalendarResponse fromEntity(DailyTier tier){
+        return CalendarResponse.builder()
                 .id(tier.getId())
                 .tier(tier.getTier())
                 .userId(tier.getUserId())

@@ -1,4 +1,4 @@
-package com.pknu.caloriepay.domain.tier.domain;
+package com.pknu.caloriepay.global.util;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

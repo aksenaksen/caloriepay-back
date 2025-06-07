@@ -3,7 +3,7 @@ package com.pknu.caloriepay.domain.score.api;
 import com.pknu.caloriepay.domain.auth.dto.info.CurrentMemberInfo;
 import com.pknu.caloriepay.domain.score.application.CalorieRankingService;
 import com.pknu.caloriepay.domain.score.application.CalorieScoreService;
-import com.pknu.caloriepay.domain.score.application.DailyCalorieChangeService;
+import com.pknu.caloriepay.domain.score.domain.DailyCalorieChangeScheduler;
 import com.pknu.caloriepay.domain.score.dto.out.ResponseCalorieScoreDto;
 import com.pknu.caloriepay.domain.score.dto.out.ResponseCalorieScoreRankingDto;
 import com.pknu.caloriepay.domain.score.dto.out.ResponseScoreAndCalorieDto;
@@ -22,7 +22,7 @@ import java.util.List;
 public class CalorieScoreApi {
 
     private final CalorieScoreService calorieScoreService;
-    private final DailyCalorieChangeService dailyCalorieChangeService;
+    private final DailyCalorieChangeScheduler dailyCalorieChangeService;
     private final CalorieRankingService calorieRankingService;
 
     @GetMapping("")

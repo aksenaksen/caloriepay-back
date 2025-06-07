@@ -2,7 +2,7 @@ package com.pknu.caloriepay.domain.tier.api;
 
 import com.pknu.caloriepay.domain.auth.dto.info.CurrentMemberInfo;
 import com.pknu.caloriepay.domain.tier.application.DailyTierFinder;
-import com.pknu.caloriepay.domain.tier.application.MonthlyTierService;
+import com.pknu.caloriepay.domain.tier.application.MonthlyTierFinder;
 import com.pknu.caloriepay.domain.tier.dto.out.ResponseDailyTierOfMonth;
 import com.pknu.caloriepay.domain.tier.dto.out.ResponseTier;
 import com.pknu.caloriepay.global.dto.BaseRes;
@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TierApi {
 
-    private final MonthlyTierService monthlyTierService;
+    private final MonthlyTierFinder monthlyTierService;
     private final DailyTierFinder dailyTierService;
 
     @GetMapping("/month")

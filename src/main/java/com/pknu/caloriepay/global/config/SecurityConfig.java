@@ -18,11 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Autowired
-    private JwtAuthenticationFilter jwtFilter;
+//    @Autowired
+//    private JwtAuthenticationFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -30,12 +30,13 @@ public class SecurityConfig {
                 .cors(cors->cors.disable())
                 .csrf(csrf -> csrf.disable())  // CSRF 보호 비활성화
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                        .requestMatchers("/api/members/join/**","api/auth/login","/api/oauth/**").permitAll()// 로그인, 회원가입은 모두 허용
-                        .anyRequest().authenticated()  // 그 외 모든 요청은 인증 필요
+//                        .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+                        .requestMatchers("/**").permitAll()// 로그인, 회원가입은 모두 허용
+                        .anyRequest().permitAll()  // 그 외 모든 요청은 인증 필요
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // 세션 사용 안 함
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .headers().frameOptions().disable();
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));  // 세션 사용 안 함
+////                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

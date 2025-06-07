@@ -1,7 +1,7 @@
 package com.pknu.caloriepay.domain.calender.application;
 
 import com.pknu.caloriepay.domain.calender.dto.out.CalendarDetailResponse;
-import com.pknu.caloriepay.domain.calender.dto.out.ResponseCalendarDto;
+import com.pknu.caloriepay.domain.calender.dto.out.CalendarResponse;
 import com.pknu.caloriepay.domain.exercise.application.ExerciseFinder;
 import com.pknu.caloriepay.domain.exercise.application.ExerciseTypeFinder;
 import com.pknu.caloriepay.domain.exercise.domain.Exercise;
@@ -37,9 +37,9 @@ public class CalendarService {
     }
 
     @Transactional(readOnly = true)
-    public List<ResponseCalendarDto> getCalendarByUserIdAndDate(Long userId, LocalDate start, LocalDate end){
+    public List<CalendarResponse> getCalendarByUserIdAndDate(Long userId, LocalDate start, LocalDate end){
         return dailyTierFinder.findByDate(userId,start,end).stream()
-                .map(ResponseCalendarDto::fromEntity)
+                .map(CalendarResponse::fromEntity)
                 .toList();
     }
 
