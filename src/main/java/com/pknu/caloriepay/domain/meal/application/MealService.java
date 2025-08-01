@@ -4,6 +4,7 @@ import com.pknu.caloriepay.domain.auth.dto.info.CurrentMemberInfo;
 import com.pknu.caloriepay.domain.file.domain.ImageFile;
 import com.pknu.caloriepay.domain.file.domain.ImageFileRepository;
 import com.pknu.caloriepay.domain.file.dto.response.UploadResult;
+import com.pknu.caloriepay.domain.meal.application.out.MealResponse;
 import com.pknu.caloriepay.domain.meal.dao.MealRepository;
 import com.pknu.caloriepay.domain.meal.domain.Food;
 import com.pknu.caloriepay.domain.meal.domain.Meal;
@@ -17,6 +18,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +30,7 @@ public class MealService {
     private final ImageFileRepository imageFileRepository;
     private final MealRepository mealRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
+
     @Transactional
     public MealDto save(UploadResult res, List<FoodDto> foodList, CurrentMemberInfo memberInfo) {
         LocalDateTime mealTime = imageFileRepository.findById(res.imageFileId())
@@ -58,5 +61,12 @@ public class MealService {
         applicationEventPublisher.publishEvent(new MealEventDto(meal.getMemberId(), meal.getTotalCalorie()));
 
         return MealDto.from(result);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MealResponse> findAll(Long userId, LocalDateTime start, LocalDateTime end) {
+        return mealRepository.findAllByMemberIdAndMealTimeBetween(userId,start,end).stream()
+                .map(MealResponse::from)
+                .toList();
     }
 }

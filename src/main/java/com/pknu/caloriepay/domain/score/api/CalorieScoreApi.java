@@ -3,10 +3,9 @@ package com.pknu.caloriepay.domain.score.api;
 import com.pknu.caloriepay.domain.auth.dto.info.CurrentMemberInfo;
 import com.pknu.caloriepay.domain.score.application.CalorieRankingService;
 import com.pknu.caloriepay.domain.score.application.CalorieScoreService;
-import com.pknu.caloriepay.domain.score.domain.DailyCalorieChangeScheduler;
+import com.pknu.caloriepay.domain.score.domain.event.DailyCalorieChangeScheduler;
 import com.pknu.caloriepay.domain.score.dto.out.ResponseCalorieScoreDto;
 import com.pknu.caloriepay.domain.score.dto.out.ResponseCalorieScoreRankingDto;
-import com.pknu.caloriepay.domain.score.dto.out.ResponseScoreAndCalorieDto;
 import com.pknu.caloriepay.global.dto.BaseRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,15 +23,15 @@ public class CalorieScoreApi {
     private final CalorieScoreService calorieScoreService;
     private final DailyCalorieChangeScheduler dailyCalorieChangeService;
     private final CalorieRankingService calorieRankingService;
-
-    @GetMapping("")
-    public ResponseEntity<BaseRes<ResponseScoreAndCalorieDto>> getCalorieChange(@AuthenticationPrincipal CurrentMemberInfo memberInfo){
-        ResponseScoreAndCalorieDto responseScoreAndCalorieDto = new ResponseScoreAndCalorieDto(
-                dailyCalorieChangeService.getCalorieChange(memberInfo.memberId()),
-                calorieScoreService.getCalorieScoreByUserIdAndDate(memberInfo.memberId())
-        );
-        return ResponseEntity.ok(BaseRes.success(responseScoreAndCalorieDto));
-    }
+//
+//    @GetMapping("")
+//    public ResponseEntity<BaseRes<ResponseScoreAndCalorieDto>> getCalorieChange(@AuthenticationPrincipal CurrentMemberInfo memberInfo){
+//        ResponseScoreAndCalorieDto responseScoreAndCalorieDto = new ResponseScoreAndCalorieDto(
+//                dailyCalorieChangeService.getCalorieChange(memberInfo.memberId()),
+//                calorieScoreService.getCalorieScoreByUserIdAndDate(memberInfo.memberId())
+//        );
+//        return ResponseEntity.ok(BaseRes.success(responseScoreAndCalorieDto));
+//    }
     @GetMapping("/change")
     public ResponseEntity<BaseRes<List<ResponseCalorieScoreDto>>> getCalorieChangesFor5Month(@AuthenticationPrincipal CurrentMemberInfo memberInfo, @RequestParam(name = "offset") Integer offset){
         List<ResponseCalorieScoreDto> calorieScoreDto = calorieScoreService.getCalorieScoreChangeFor5Month(memberInfo.memberId(),offset);

@@ -1,6 +1,6 @@
 package com.pknu.caloriepay.domain.exercise.application;
 
-import com.pknu.caloriepay.domain.exercise.dao.ExerciseRepository;
+import com.pknu.caloriepay.domain.exercise.infrastructor.ExerciseRepository;
 import com.pknu.caloriepay.domain.exercise.domain.Exercise;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -2,6 +2,7 @@ package com.pknu.caloriepay.domain.user.application;
 
 import com.pknu.caloriepay.domain.auth.dto.info.CurrentMemberInfo;
 import com.pknu.caloriepay.domain.user.dao.MemberHistoryRepository;
+import com.pknu.caloriepay.domain.user.dao.MemberRankingRedisRepository;
 import com.pknu.caloriepay.domain.user.dao.MemberRepository;
 import com.pknu.caloriepay.domain.user.domain.Member;
 import com.pknu.caloriepay.domain.user.domain.MemberHistory;
@@ -23,6 +24,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberHistoryRepository memberHistoryRepository;
     private final MemberHistoryService memberHistoryService;
+    private final MemberRankingRedisRepository memberRankingRedisRepository;
 
     public MemberDto getMemberInfo(CurrentMemberInfo memberInfo){
         // Member 조회
@@ -74,4 +76,14 @@ public class MemberService {
         if (updateRequest.getVisible() != null) member.getPreferences().updateVisible(updateRequest.getVisible());memberHistoryService.recordMemberHistory(member);
         return MemberDto.from(member);
     }
+
+    @Transactional(readOnly = true)
+    public Long findRank(Long userId){
+        Long rank = memberRankingRedisRepository.findRank(userId);
+        if(rank == null){
+            rank = memberRepository.findRank(userId);
+        }
+        return rank;
+    }
+
 }

@@ -19,9 +19,14 @@ public class Member {
     private Long id;
 
     private String name;
+
     private String email;
+
     private String phoneNumber;
+
     private String nickname;
+
+    private Integer score;
 
     @Embedded
     private Profile profile;
@@ -30,7 +35,7 @@ public class Member {
     private Preferences preferences;
 
     // Member 엔티티의 생성 메서드
-    public static Member createMember(String name, String email, String phoneNumber, String nickname, Profile profile, Preferences preferences) {
+    public static Member createMember(String name, String email, String phoneNumber, String nickname, Profile profile, Preferences preferences,Integer score) {
         return Member.builder()
                 .name(name)
                 .email(email)
@@ -38,6 +43,7 @@ public class Member {
                 .nickname(nickname)
                 .profile(profile)
                 .preferences(preferences)
+                .score(score)
                 .build();
     }
 

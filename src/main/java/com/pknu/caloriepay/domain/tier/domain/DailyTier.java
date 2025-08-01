@@ -1,5 +1,6 @@
 package com.pknu.caloriepay.domain.tier.domain;
 
+import com.pknu.caloriepay.concept.Tier;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

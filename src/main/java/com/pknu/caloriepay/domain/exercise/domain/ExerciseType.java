@@ -22,6 +22,6 @@ public class ExerciseType {
     private double averageCaloriesPerMinute;
 
     public double calculateCalories(Integer time){
-        return this.getId()*time*averageCaloriesPerMinute;
+        return time * this.averageCaloriesPerMinute;
     }
 }

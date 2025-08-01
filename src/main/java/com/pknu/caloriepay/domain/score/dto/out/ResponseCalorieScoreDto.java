@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Getter
 @Builder
 public class ResponseCalorieScoreDto {
+
     private Long id;
 
     private Long userId;

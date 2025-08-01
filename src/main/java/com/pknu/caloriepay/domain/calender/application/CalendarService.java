@@ -1,15 +1,12 @@
 package com.pknu.caloriepay.domain.calender.application;
 
-import com.pknu.caloriepay.domain.calender.dto.out.CalendarDetailResponse;
-import com.pknu.caloriepay.domain.calender.dto.out.CalendarResponse;
-import com.pknu.caloriepay.domain.exercise.application.ExerciseFinder;
-import com.pknu.caloriepay.domain.exercise.application.ExerciseTypeFinder;
-import com.pknu.caloriepay.domain.exercise.domain.Exercise;
-import com.pknu.caloriepay.domain.exercise.domain.ExerciseType;
-import com.pknu.caloriepay.domain.calender.dto.out.ExerciseAndType;
-import com.pknu.caloriepay.domain.meal.dao.MealRepository;
-import com.pknu.caloriepay.domain.meal.dto.MealDto;
-import com.pknu.caloriepay.domain.tier.application.DailyTierFinder;
+import com.pknu.caloriepay.domain.calender.application.out.CalendarDetailResponse;
+import com.pknu.caloriepay.domain.exercise.application.ExerciseService;
+import com.pknu.caloriepay.domain.exercise.application.out.ExerciseResponse;
+import com.pknu.caloriepay.domain.meal.application.MealService;
+import com.pknu.caloriepay.domain.meal.application.out.MealResponse;
+import com.pknu.caloriepay.domain.tier.application.TierService;
+import com.pknu.caloriepay.domain.tier.application.out.DailyTierResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,10 +23,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CalendarService {
 
-    private final MealRepository mealRepository;
-    private final ExerciseFinder exerciseFinder;
-    private final ExerciseTypeFinder exerciseTypeFinder;
-    private final DailyTierFinder dailyTierFinder;
+    private final MealService mealService;
+    private final ExerciseService exerciseService;
+    private final TierService tierService;
 
     @Transactional(readOnly = true)
     public CalendarDetailResponse findCalendarDetail(Long userId, LocalDate date){
@@ -37,32 +33,20 @@ public class CalendarService {
     }
 
     @Transactional(readOnly = true)
-    public List<CalendarResponse> getCalendarByUserIdAndDate(Long userId, LocalDate start, LocalDate end){
-        return dailyTierFinder.findByDate(userId,start,end).stream()
-                .map(CalendarResponse::fromEntity)
-                .toList();
+    public List<DailyTierResponse> getCalendarByUserIdAndDate(Long userId, LocalDate start, LocalDate end){
+
+        return tierService.findAll(userId, start, end);
     }
 
+    private List<ExerciseResponse> findExerciseList(Long userId, LocalDate date) {
 
-    private List<ExerciseAndType> findExerciseList(Long userId, LocalDate date) {
-
-        List<Exercise> exerciseRecords = exerciseFinder.findByDate(userId, date);
-
-        return exerciseRecords.stream()
-                .map(exerciseRecord -> {
-                    ExerciseType type = exerciseTypeFinder.find(exerciseRecord.getId());
-                    return ExerciseAndType.fromEntity(exerciseRecord, type);
-                })
-                .toList();
+        return exerciseService.findExerciseByDate(userId,date);
     }
 
-    private List<MealDto> findMealRecordList(Long userId, LocalDate date){
+    private List<MealResponse> findMealRecordList(Long userId, LocalDate date){
+        LocalDateTime start= date.atStartOfDay(); // 예: 2023-10-30T00:00:00
+        LocalDateTime end = date.atTime(LocalTime.MAX); // 예: 2023-10-30T23:59:59.999999999
 
-        LocalDateTime startOfDay = date.atStartOfDay(); // 예: 2023-10-30T00:00:00
-        LocalDateTime endOfDay = date.atTime(LocalTime.MAX); // 예: 2023-10-30T23:59:59.999999999
-
-        return mealRepository.findAllByMemberIdAndMealTimeBetween(userId,startOfDay, endOfDay).stream()
-                .map(MealDto::from)
-                .toList();
+        return mealService.findAll(userId,start,end);
     }
 }

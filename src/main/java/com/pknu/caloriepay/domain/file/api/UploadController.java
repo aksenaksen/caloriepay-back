@@ -30,12 +30,13 @@ public class UploadController {
     private final MealImageAnalysisClient mealImageAnalysisClient;
     private final MealService mealService;
 
-    // 추후에 exercise 인 경우 분기
+    // 추후에 exercises 인 경우 분기
     @PostMapping("")
     public ResponseEntity<BaseRes<MealDto>> uploadImage(
             @RequestParam("file") MultipartFile file,
             @RequestParam("category") ImageCategory category,
             @AuthenticationPrincipal CurrentMemberInfo memberInfo) {
+
         UploadResult res = imageUploadService.fileUpload(file,category,memberInfo);
         List<FoodDto> foodList = mealImageAnalysisClient.analyze(res);
         MealDto result = mealService.save(res,foodList,memberInfo);

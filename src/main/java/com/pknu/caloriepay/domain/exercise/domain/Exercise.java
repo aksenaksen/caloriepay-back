@@ -35,16 +35,22 @@ public class Exercise {
 
     private LocalDate date;
 
-    public static Exercise of(Long userId,ExerciseType exerciseType, String title, Duration duration) {
+
+    public static Exercise recordExercise(long userId,
+                                          String title,
+                                          long exerciseTypeId,
+                                          double burnedCalorie,
+                                          Duration duration){
         return Exercise.builder()
-                .exerciseTypeId(exerciseType.getId())
+                .exerciseTypeId(exerciseTypeId)
                 .title(title)
                 .duration(duration)
                 .userId(userId)
-                .caloriesBurned(exerciseType.calculateCalories(duration.getMinutes()))
+                .caloriesBurned(burnedCalorie)
                 .date(LocalDate.now())
                 .build();
     }
+
 
     public void recordExercise(){
         Events.publish(new ExerciseRecordEvent(userId, caloriesBurned));
