@@ -1,4 +1,4 @@
-package com.pknu.caloriepay.domain.score.dto.out;
+package com.pknu.caloriepay.domain.score.application.out;
 
 import com.pknu.caloriepay.domain.score.domain.DailyCalorieChange;
 import lombok.Builder;

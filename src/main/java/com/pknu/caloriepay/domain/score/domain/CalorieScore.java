@@ -27,6 +27,17 @@ public class CalorieScore {
 
     private Integer score;
 
+    public static CalorieScore createCalorieScoreOld(long userId, double remainCalorie){
+        CalorieScore newScore = CalorieScore.builder()
+                .userId(userId)
+                .date(LocalDate.now())
+                .build();
+        newScore.calculateScore(remainCalorie);
+        return newScore;
+    }
+
+
+
     public void calculateScore(double remainCalorie){
         this.score= (int) (remainCalorie/2);
     }

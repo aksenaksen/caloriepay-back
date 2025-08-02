@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -22,9 +23,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final MemberHistoryRepository memberHistoryRepository;
     private final MemberHistoryService memberHistoryService;
     private final MemberRankingRedisRepository memberRankingRedisRepository;
+
 
     public MemberDto getMemberInfo(CurrentMemberInfo memberInfo){
         // Member 조회
@@ -78,12 +79,20 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public Long findRank(Long userId){
-        Long rank = memberRankingRedisRepository.findRank(userId);
+    public RankInfo findRank(Long userId){
+        RankInfo rank = memberRankingRedisRepository.findRank(userId);
+
         if(rank == null){
-            rank = memberRepository.findRank(userId);
+            int newRank = memberRepository.findRank(userId).intValue();
+            return new RankInfo(userId,newRank,null);
         }
+
         return rank;
+    }
+
+    @Transactional(readOnly = true)
+    public List<RankInfo> findRanks(){
+        return memberRankingRedisRepository.findAll();
     }
 
 }

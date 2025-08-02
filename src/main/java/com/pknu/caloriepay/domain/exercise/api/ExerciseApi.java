@@ -27,6 +27,7 @@ public class ExerciseApi {
         List<ExerciseTypeResponse> data = exerciseService.findTypes();
         return ResponseEntity.ok(BaseRes.success(data));
     }
+
     @PostMapping("/record")
     public ResponseEntity<BaseRes<Void>> postRecordExercise(@AuthenticationPrincipal CurrentMemberInfo info, @RequestBody @Valid ExerciseRecordRequest request){
 

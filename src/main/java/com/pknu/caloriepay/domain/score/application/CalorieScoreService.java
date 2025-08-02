@@ -1,13 +1,13 @@
 package com.pknu.caloriepay.domain.score.application;
 
+import com.pknu.caloriepay.domain.score.application.out.CalorieScoreResponse;
 import com.pknu.caloriepay.domain.score.dao.CalorieScoreRepository;
 import com.pknu.caloriepay.domain.score.domain.CalorieScore;
-import com.pknu.caloriepay.domain.score.dto.out.ResponseCalorieScoreDto;
 import com.pknu.caloriepay.domain.user.dao.MemberRepository;
 import com.pknu.caloriepay.domain.user.domain.Member;
 import com.pknu.caloriepay.global.enums.ResCode;
 import com.pknu.caloriepay.global.error.CustomException;
-import com.pknu.caloriepay.domain.score.domain.event.DailyCalorieSummaryEvent;
+import com.pknu.caloriepay.domain.score.event.DailyCalorieSummaryEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -17,9 +17,7 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
-import java.util.stream.IntStream;
 
 
 @Service
@@ -27,59 +25,51 @@ import java.util.stream.IntStream;
 public class CalorieScoreService {
 
     private final CalorieScoreRepository calorieScoreRepository;
+    private final CalorieScoreFinder calorieScoreFinder;
     private final MemberRepository memberRepository;
 
-    public ResponseCalorieScoreDto getCalorieScoreByUserIdAndDate(Long userId){
-        Member member = memberRepository.findById(userId).orElseThrow(() ->new CustomException(ResCode.USER_NOT_FOUND));
+//    public ResponseCalorieScoreDto getCalorieScoreByUserIdAndDate(Long userId){
+//        Member member = memberRepository.findById(userId).orElseThrow(() ->new CustomException(ResCode.USER_NOT_FOUND));
+//
+//        return calorieScoreRepository.findTopByUserIdOrderByDateDesc(userId)
+//                .map((calorieScore) ->ResponseCalorieScoreDto.fromEntity(calorieScore,member))
+//                .orElse(null);
+//    }
 
-        return calorieScoreRepository.findTopByUserIdOrderByDateDesc(userId)
-                .map((calorieScore) ->ResponseCalorieScoreDto.fromEntity(calorieScore,member))
-                .orElse(null);
-    }
-    public List<ResponseCalorieScoreDto> getCalorieScoreChangeFor5Month(Long userId,Integer offset) {
+    @Transactional(readOnly = true)
+    public List<CalorieScoreResponse> getCalorieScoreChangeFor5Month(Long userId,Integer offset) {
+
         Member member = memberRepository.findById(userId).orElseThrow(() ->new CustomException(ResCode.USER_NOT_FOUND));
         LocalDate currentDate = LocalDate.now();
 
-        return IntStream.range(0, offset)
-                .mapToObj(i -> {
-                    LocalDate targetDate = currentDate.minusMonths(i);
-                    return calorieScoreRepository.findLatestScoreByUserIdAndYearAndMonth(userId, targetDate.getYear(), targetDate.getMonthValue())
-                            .map(score -> ResponseCalorieScoreDto.fromEntity(score,member))
-                            .orElse(null);
-                })
+        return calorieScoreFinder.getCalorieScoreChangeForMonth(userId,offset,currentDate).stream()
+                .map(score -> CalorieScoreResponse.of(
+                        score,
+                        member.getName()
+                ))
                 .toList();
     }
 
-    public ResponseCalorieScoreDto getHighCalorieScoreOfMonth(Long userId, LocalDate date){
-        Member member = memberRepository.findById(userId).orElseThrow(() ->new CustomException(ResCode.USER_NOT_FOUND));
-
-        LocalDate startOfMonth = date.with(TemporalAdjusters.firstDayOfMonth());
-        LocalDate endOfMonth = date.with(TemporalAdjusters.lastDayOfMonth());
-
-        return ResponseCalorieScoreDto.fromEntity(calorieScoreRepository.findHighScoreOfMonthByUserId(userId,startOfMonth,endOfMonth).orElseThrow( () ->
-                new CustomException(ResCode.SCORE_NOT_FOUND)),member);
-    }
-
-    @Transactional
-    public void refreshCalorieScoreByUserId(Long userId) {
-        calorieScoreRepository.findByUserIdAndDate(userId, LocalDate.now())
-                .ifPresentOrElse(
-                        calorieScore -> {
-                        },
-                        () -> {
-                            CalorieScore latestScore = calorieScoreRepository.findTopByUserIdOrderByDateDesc(userId)
-                                    .orElseThrow(() -> new CustomException(ResCode.SCORE_NOT_FOUND));
-                            calorieScoreRepository.save(
-                                    CalorieScore.builder()
-                                            .userId(latestScore.getUserId())
-                                            .score(latestScore.getScore())
-                                            .date(LocalDate.now())
-                                            .build()
-                            );
-                        }
-                );
-    }
-
+//    @Transactional
+//    public void refreshCalorieScoreByUserId(Long userId) {
+//        calorieScoreRepository.findByUserIdAndDate(userId, LocalDate.now())
+//                .ifPresentOrElse(
+//                        calorieScore -> {
+//                        },
+//                        () -> {
+//                            CalorieScore latestScore = calorieScoreRepository.findTopByUserIdOrderByDateDesc(userId)
+//                                    .orElseThrow(() -> new CustomException(ResCode.SCORE_NOT_FOUND));
+//                            calorieScoreRepository.save(
+//                                    CalorieScore.builder()
+//                                            .userId(latestScore.getUserId())
+//                                            .score(latestScore.getScore())
+//                                            .date(LocalDate.now())
+//                                            .build()
+//                            );
+//                        }
+//                );
+//    }
+//  배치 도입 이후 필요없음.
     @Async("threadPoolTaskExecutor")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)

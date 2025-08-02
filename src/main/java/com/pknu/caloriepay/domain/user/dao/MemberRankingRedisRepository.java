@@ -1,19 +1,17 @@
 package com.pknu.caloriepay.domain.user.dao;
 
+import com.pknu.caloriepay.domain.user.application.RankInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.StringRedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -40,19 +38,33 @@ public class MemberRankingRedisRepository {
         redisTemplate.delete(KEY);
     }
 
-    public Map<Long, Integer> findAll() {
+    public List<RankInfo> findAll() {
+        AtomicInteger rank = new AtomicInteger(0);
+        AtomicInteger prevScore = new AtomicInteger(Integer.MIN_VALUE);
+
         return Objects.requireNonNull(redisTemplate.opsForZSet()
-                        .reverseRangeWithScores(KEY, 0, -1)).stream()
-                .collect(Collectors.toMap(
-                        tuple -> Long.parseLong(Objects.requireNonNull(tuple.getValue())),  // String -> Long 변환
-                        tuple -> Objects.requireNonNull(tuple.getScore()).intValue(),
-                        (oldV, newV) -> oldV,
-                        LinkedHashMap::new
-                ));
+                .reverseRangeWithScores(KEY, 0, -1)).stream()
+                    .map(tuple -> {
+                        long userId = Long.parseLong(Objects.requireNonNull(tuple.getValue()));
+                        int score = Objects.requireNonNull(tuple.getScore()).intValue();
+
+                        if(prevScore.get() != score){
+                            rank.incrementAndGet();
+                        }
+
+                        prevScore.set(score);
+
+                        return new RankInfo(userId, rank.get(), score);
+                    })
+                .toList();
     }
 
-    public Long findRank(Long userId){
-        return redisTemplate.opsForZSet()
-                .reverseRank(KEY, String.valueOf(userId));
+    public RankInfo findRank(Long userId){
+        List<RankInfo> ranks = this.findAll();
+        return ranks.stream()
+                .filter(r -> r.userId() == userId)
+                .findFirst()
+                .map(rankInfo -> new RankInfo(rankInfo.userId(), rankInfo.rank(),  rankInfo.score()))
+                .orElse(null);
     }
 }

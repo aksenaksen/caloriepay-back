@@ -1,8 +1,8 @@
-package com.pknu.caloriepay.domain.score.domain.event;
+package com.pknu.caloriepay.domain.score.event;
 
 import com.pknu.caloriepay.domain.score.dao.DailyCalorieChangeRepository;
 import com.pknu.caloriepay.domain.score.domain.DailyCalorieChange;
-import com.pknu.caloriepay.domain.score.dto.out.ResponseDailyCalorieChangeDto;
+import com.pknu.caloriepay.domain.score.application.out.ResponseDailyCalorieChangeDto;
 import com.pknu.caloriepay.global.util.BatchPersistTemplate;
 import com.pknu.caloriepay.global.event.Events;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +13,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class DailyCalorieChangeProcessor {
-
+public class processor {
 
     private final DailyCalorieChangeRepository dailyCalorieChangeRepository;
     private final BatchPersistTemplate batchPersistTemplate;

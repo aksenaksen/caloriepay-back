@@ -1,4 +1,4 @@
-package com.pknu.caloriepay.domain.score.domain.event;
+package com.pknu.caloriepay.domain.score.event;
 
 import com.pknu.caloriepay.domain.score.dao.CalorieScoreRepository;
 import com.pknu.caloriepay.domain.score.dao.DailyCalorieChangeRepository;
@@ -29,7 +29,6 @@ public class CalorieScoreAndChangeEventListener {
 
     private final CalorieScoreRepository calorieScoreRepository;
     private final DailyCalorieChangeRepository dailyCalorieChangeRepository;
-//  멤버 프로필 변경이 있을대
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)

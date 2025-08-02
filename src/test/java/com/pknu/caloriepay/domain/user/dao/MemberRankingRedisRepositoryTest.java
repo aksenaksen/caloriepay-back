@@ -1,5 +1,6 @@
 package com.pknu.caloriepay.domain.user.dao;
 
+import com.pknu.caloriepay.domain.user.application.RankInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -37,13 +39,10 @@ class MemberRankingRedisRepositoryTest {
             repository.add(userId, score);
         });
 
-        Map<Long, Integer> result = repository.findAll();
-        Long firstUserId = result.keySet().iterator().next();
+        List<RankInfo> result = repository.findAll();
 
         assertThat(result.size()).isLessThanOrEqualTo(100);
-        assertThat(result.get(7777L)).isEqualTo(11111);// 랭킹 제한 확인
-        assertThat(firstUserId).isEqualTo(7777L);
-        assertThat(result.get(4444L)).isEqualTo(null);
+        assertThat(result.get(0).userId()).isEqualTo(7777L);// 랭킹 제한 확인
     }
 
     @Test
@@ -54,7 +53,7 @@ class MemberRankingRedisRepositoryTest {
         });
 
         System.out.println(repository.findRank(7777L));
-        assertThat(repository.findRank(7777L)).isEqualTo(0L);
+        assertThat(repository.findRank(7777L).rank()).isEqualTo(1L);
         assertThat(repository.findRank(4444L)).isEqualTo(null);
     }
 }

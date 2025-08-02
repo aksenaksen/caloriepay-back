@@ -1,4 +1,4 @@
-package com.pknu.caloriepay.domain.score.domain.event;
+package com.pknu.caloriepay.domain.score.event;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DailyCalorieChangeScheduler {
 
-    private final DailyCalorieChangeProcessor dailyCalorieChangeProcessor;
+    private final processor dailyCalorieChangeProcessor;
 
 //  일별 칼로리 정산
     @Async("threadPoolTaskExecutor")

@@ -4,6 +4,7 @@ import com.pknu.caloriepay.domain.auth.dto.info.CurrentMemberInfo;
 import com.pknu.caloriepay.domain.user.application.MemberHistoryService;
 import com.pknu.caloriepay.domain.user.application.MemberJoinService;
 import com.pknu.caloriepay.domain.user.application.MemberService;
+import com.pknu.caloriepay.domain.user.application.RankInfo;
 import com.pknu.caloriepay.domain.user.domain.Member;
 import com.pknu.caloriepay.domain.user.dto.MemberDto;
 import com.pknu.caloriepay.domain.user.dto.ProfileDto;
@@ -66,8 +67,17 @@ public class MemberController {
         return ResponseEntity.ok().body(BaseRes.success(res));
     }
 
+    @GetMapping("/rank")
+    public ResponseEntity<BaseRes<List<RankInfo>>> getCalorieScoreRanking(){
 
+        List<RankInfo> res = memberService.findRanks();
+        return ResponseEntity.ok(BaseRes.success(res));
+    }
 
+    @GetMapping("/rank/member")
+    public ResponseEntity<BaseRes<RankInfo>> getCalorieScoreRankingMember(@AuthenticationPrincipal CurrentMemberInfo memberInfo){
 
-
+        RankInfo res = memberService.findRank(memberInfo.memberId());
+        return ResponseEntity.ok(BaseRes.success(res));
+    }
 }

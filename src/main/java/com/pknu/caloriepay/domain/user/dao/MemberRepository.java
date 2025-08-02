@@ -18,10 +18,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query(value = """
     SELECT ranking FROM
     (
-        SELECT member_id, RANK() OVER(ORDER BY score DESC) as ranking
+        SELECT id, RANK() OVER(ORDER BY score DESC) as ranking
         FROM member
     ) as ranked_table
-    WHERE member_id = :userId
+    WHERE id = :userId
     """, nativeQuery = true)
     Long findRank(Long userId);
 }

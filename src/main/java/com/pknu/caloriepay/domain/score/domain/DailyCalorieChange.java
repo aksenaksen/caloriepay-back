@@ -52,8 +52,6 @@ public class DailyCalorieChange {
         resetCalorie();
     }
 
-
-
     public void resetRecommendedCalorie(Profile profile) {
         double bmr = calculateBMR(profile);
         double recommendedCalories = adjustForActivityLevel(bmr, profile.getActivityLevel());
