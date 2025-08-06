@@ -1,8 +1,8 @@
 package com.pknu.caloriepay.domain.score.application;
 
-import com.pknu.caloriepay.domain.score.application.out.CalorieScoreResponse;
-import com.pknu.caloriepay.domain.score.dao.CalorieScoreRepository;
-import com.pknu.caloriepay.domain.score.domain.CalorieScore;
+import com.pknu.caloriepay.domain.score.application.out.CalorieScoreHistoryResponse;
+import com.pknu.caloriepay.domain.score.dao.CalorieScoreHistoryRepository;
+import com.pknu.caloriepay.domain.score.domain.CalorieScoreHistory;
 import com.pknu.caloriepay.domain.user.dao.MemberRepository;
 import com.pknu.caloriepay.domain.user.domain.Member;
 import com.pknu.caloriepay.global.enums.ResCode;
@@ -22,10 +22,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CalorieScoreService {
+public class CalorieScoreHistoryService {
 
-    private final CalorieScoreRepository calorieScoreRepository;
-    private final CalorieScoreFinder calorieScoreFinder;
+    private final CalorieScoreHistoryRepository calorieScoreRepository;
+    private final CalorieScoreHistoryFinder calorieScoreHistoryFinder;
     private final MemberRepository memberRepository;
 
 //    public ResponseCalorieScoreDto getCalorieScoreByUserIdAndDate(Long userId){
@@ -37,13 +37,13 @@ public class CalorieScoreService {
 //    }
 
     @Transactional(readOnly = true)
-    public List<CalorieScoreResponse> getCalorieScoreChangeFor5Month(Long userId,Integer offset) {
+    public List<CalorieScoreHistoryResponse> findCalorieScoreHistoryBetweenMonth(Long userId, Integer offset) {
 
         Member member = memberRepository.findById(userId).orElseThrow(() ->new CustomException(ResCode.USER_NOT_FOUND));
         LocalDate currentDate = LocalDate.now();
 
-        return calorieScoreFinder.getCalorieScoreChangeForMonth(userId,offset,currentDate).stream()
-                .map(score -> CalorieScoreResponse.of(
+        return calorieScoreHistoryFinder.getCalorieScoreChangeForMonth(userId,offset,currentDate).stream()
+                .map(score -> CalorieScoreHistoryResponse.of(
                         score,
                         member.getName()
                 ))
@@ -75,10 +75,10 @@ public class CalorieScoreService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void calculateScore(DailyCalorieSummaryEvent eventDto) {
         eventDto.getDailyCalorieChangeDtoList().forEach(dto -> {
-            CalorieScore existingScore = calorieScoreRepository.findByUserIdAndDate(dto.getUserId(), LocalDate.now().minusDays(1))
+            CalorieScoreHistory existingScore = calorieScoreRepository.findByUserIdAndDate(dto.getUserId(), LocalDate.now().minusDays(1))
                     .orElseThrow(() -> new CustomException(ResCode.SCORE_NOT_FOUND));
 
-            CalorieScore newScore = CalorieScore.builder()
+            CalorieScoreHistory newScore = CalorieScoreHistory.builder()
                     .userId(dto.getUserId())
                     .score(existingScore.getScore()) // 이전 점수 또는 계산된 값
                     .date(LocalDate.now())

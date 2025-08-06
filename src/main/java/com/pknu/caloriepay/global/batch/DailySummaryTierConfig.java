@@ -1,7 +1,7 @@
 package com.pknu.caloriepay.global.batch;
 
 import com.pknu.caloriepay.concept.Tier;
-import com.pknu.caloriepay.domain.score.domain.DailyCalorieChange;
+import com.pknu.caloriepay.domain.recommandcalorie.domain.RecommandCalorie;
 import com.pknu.caloriepay.domain.tier.domain.DailyTier;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
@@ -26,14 +26,14 @@ public class DailySummaryTierConfig {
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
-    private final JpaCursorItemReader<DailyCalorieChange> dailyCalorieReader;
+    private final JpaCursorItemReader<RecommandCalorie> dailyCalorieReader;
     private final StepLoggerListener stepLoggerListener;
     private final EntityManagerFactory emf;
 
     @Bean
     public Step dailyCalorieSummaryTierStep(){
         return new StepBuilder("dailyCalorieSummaryTierStep", jobRepository)
-                .<DailyCalorieChange, DailyTier>chunk(20, transactionManager)
+                .<RecommandCalorie, DailyTier>chunk(20, transactionManager)
                 .reader(dailyCalorieReader)
                 .processor(dailyCalorieSummaryTierProcessor())
                 .writer(dailyCalorieSummaryTierWriter())
@@ -42,7 +42,7 @@ public class DailySummaryTierConfig {
     }
 
     @Bean
-    public ItemProcessor<DailyCalorieChange, DailyTier>  dailyCalorieSummaryTierProcessor(){
+    public ItemProcessor<RecommandCalorie, DailyTier>  dailyCalorieSummaryTierProcessor(){
         return item -> DailyTier.of(item.getUserId(),
                 Tier.calculateDailyTier(item.getRemainCalorie()),
                 LocalDate.now().minusDays(1));

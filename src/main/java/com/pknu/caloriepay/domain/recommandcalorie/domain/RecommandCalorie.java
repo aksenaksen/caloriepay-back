@@ -1,4 +1,4 @@
-package com.pknu.caloriepay.domain.score.domain;
+package com.pknu.caloriepay.domain.recommandcalorie.domain;
 
 import com.pknu.caloriepay.domain.user.domain.ActivityLevel;
 import com.pknu.caloriepay.domain.user.domain.Gender;
@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DailyCalorieChange {
+public class RecommandCalorie {
 
 
     @Id

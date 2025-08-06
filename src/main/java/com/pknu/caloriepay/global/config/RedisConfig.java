@@ -1,7 +1,7 @@
 package com.pknu.caloriepay.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pknu.caloriepay.domain.score.domain.DailyCalorieChange;
+import com.pknu.caloriepay.domain.recommandcalorie.domain.RecommandCalorie;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,12 +37,12 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, DailyCalorieChange> calorieRedisTemplate() {
-        RedisTemplate<String, DailyCalorieChange> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, RecommandCalorie> calorieRedisTemplate() {
+        RedisTemplate<String, RecommandCalorie> redisTemplate = new RedisTemplate<>();
         ObjectMapper objectMapper = new ObjectMapper();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(objectMapper, DailyCalorieChange.class));
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(objectMapper, RecommandCalorie.class));
         redisTemplate.afterPropertiesSet();
 
         return redisTemplate;

@@ -1,10 +1,9 @@
 package com.pknu.caloriepay.batch;
 
-import com.pknu.caloriepay.domain.score.dao.CalorieScoreRepository;
-import com.pknu.caloriepay.domain.score.dao.DailyCalorieChangeRepository;
-import com.pknu.caloriepay.domain.score.domain.CalorieScore;
-import com.pknu.caloriepay.domain.score.domain.DailyCalorieChange;
-import com.pknu.caloriepay.domain.tier.domain.DailyTier;
+import com.pknu.caloriepay.domain.recommandcalorie.domain.RecommandCalorie;
+import com.pknu.caloriepay.domain.score.dao.CalorieScoreHistoryRepository;
+import com.pknu.caloriepay.domain.recommandcalorie.infrastructor.RecommandCalorieHistoryRepository;
+import com.pknu.caloriepay.domain.score.domain.CalorieScoreHistory;
 import com.pknu.caloriepay.domain.tier.infrastructor.DailyTierRepository;
 import com.pknu.caloriepay.domain.user.domain.ActivityLevel;
 import com.pknu.caloriepay.domain.user.domain.Gender;
@@ -44,18 +43,18 @@ public class DailyCalorieSummaryTest {
     private DailyTierRepository dailyTierRepository;
 
     @Autowired
-    private DailyCalorieChangeRepository repository;
+    private RecommandCalorieHistoryRepository repository;
 
     @Autowired
-    private CalorieScoreRepository calorieScoreRepository;
+    private CalorieScoreHistoryRepository calorieScoreRepository;
 
     @Autowired
-    private RedisTemplate<String, DailyCalorieChange> redisTemplate;
+    private RedisTemplate<String, RecommandCalorie> redisTemplate;
 
     @PostConstruct
     public void init(){
-        List<DailyCalorieChange> dailyCalorieChanges = new ArrayList<>();
-        List<CalorieScore> calorieScores = new ArrayList<>();
+        List<RecommandCalorie> dailyCalorieChanges = new ArrayList<>();
+        List<CalorieScoreHistory> calorieScores = new ArrayList<>();
         Random random = new Random();
         LocalDate today = LocalDate.now();
 
@@ -70,7 +69,7 @@ public class DailyCalorieSummaryTest {
                     .activityLevel(ActivityLevel.values()[random.nextInt(ActivityLevel.values().length)])
                     .build();
 
-            DailyCalorieChange change = DailyCalorieChange.builder()
+            RecommandCalorie change = RecommandCalorie.builder()
                     .userId(i)
                     .build();
 

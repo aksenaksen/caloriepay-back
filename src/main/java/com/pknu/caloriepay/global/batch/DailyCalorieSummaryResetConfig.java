@@ -1,6 +1,6 @@
 package com.pknu.caloriepay.global.batch;
 
-import com.pknu.caloriepay.domain.score.domain.DailyCalorieChange;
+import com.pknu.caloriepay.domain.recommandcalorie.domain.RecommandCalorie;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Step;
@@ -23,13 +23,13 @@ public class DailyCalorieSummaryResetConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
     private final EntityManagerFactory emf;
-    private final RedisTemplate<String, DailyCalorieChange> redisTemplate;
+    private final RedisTemplate<String, RecommandCalorie> redisTemplate;
     private final StepLoggerListener stepLoggerListener;
 
     @Bean
     public Step dailyCalorieSummaryResetStep(){
         return new StepBuilder("dailyCalorieSummaryResetStep", jobRepository)
-                .<DailyCalorieChange, DailyCalorieChange>chunk(20, transactionManager)
+                .<RecommandCalorie, RecommandCalorie>chunk(20, transactionManager)
                 .reader(dailyCalorieReader())
                 .processor(dailyCalorieChangeProcessor())
                 .writer(dailyCalorieWriter())
@@ -38,8 +38,8 @@ public class DailyCalorieSummaryResetConfig {
     }
 
     @Bean
-    public JpaCursorItemReader<DailyCalorieChange> dailyCalorieReader(){
-        return new JpaCursorItemReaderBuilder<DailyCalorieChange>()
+    public JpaCursorItemReader<RecommandCalorie> dailyCalorieReader(){
+        return new JpaCursorItemReaderBuilder<RecommandCalorie>()
                 .name("dailyCalorieReader")
                 .entityManagerFactory(emf)
                 .queryString("SELECT d FROM DailyCalorieChange d")
@@ -47,7 +47,7 @@ public class DailyCalorieSummaryResetConfig {
     }
 
     @Bean
-    public ItemProcessor<DailyCalorieChange, DailyCalorieChange> dailyCalorieChangeProcessor(){
+    public ItemProcessor<RecommandCalorie, RecommandCalorie> dailyCalorieChangeProcessor(){
         return item -> {
 
             String key = "userId::" + item.getUserId();
@@ -59,8 +59,8 @@ public class DailyCalorieSummaryResetConfig {
     }
 
     @Bean
-    public JpaItemWriter<DailyCalorieChange> dailyCalorieWriter(){
-        return new JpaItemWriterBuilder<DailyCalorieChange>()
+    public JpaItemWriter<RecommandCalorie> dailyCalorieWriter(){
+        return new JpaItemWriterBuilder<RecommandCalorie>()
                 .entityManagerFactory(emf)
                 .usePersist(false)
                 .build();

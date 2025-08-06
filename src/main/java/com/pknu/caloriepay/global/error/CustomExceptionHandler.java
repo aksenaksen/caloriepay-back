@@ -29,7 +29,7 @@ public class CustomExceptionHandler {
                 .body(BaseRes.fail(e.getErrorCode()));
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    protected ResponseEntity<BaseRes<String>> handleMethodArgumentNotValidExeption(MethodArgumentNotValidException e){
+    protected ResponseEntity<BaseRes<String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
         String errMsg=e.getBindingResult()
                 .getFieldErrors().get(0).getDefaultMessage();
         log.error(errMsg);

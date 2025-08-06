@@ -1,7 +1,7 @@
 package com.pknu.caloriepay.domain.score.event;
 
-import com.pknu.caloriepay.domain.score.dao.DailyCalorieChangeRepository;
-import com.pknu.caloriepay.domain.score.domain.DailyCalorieChange;
+import com.pknu.caloriepay.domain.recommandcalorie.infrastructor.RecommandCalorieHistoryRepository;
+import com.pknu.caloriepay.domain.recommandcalorie.domain.RecommandCalorie;
 import com.pknu.caloriepay.domain.score.application.out.ResponseDailyCalorieChangeDto;
 import com.pknu.caloriepay.global.util.BatchPersistTemplate;
 import com.pknu.caloriepay.global.event.Events;
@@ -15,32 +15,32 @@ import java.util.List;
 @RequiredArgsConstructor
 public class processor {
 
-    private final DailyCalorieChangeRepository dailyCalorieChangeRepository;
+    private final RecommandCalorieHistoryRepository dailyCalorieChangeRepository;
     private final BatchPersistTemplate batchPersistTemplate;
 
     @Transactional
     public void processDailyCalorieChange(){
-        List<DailyCalorieChange> entityList = dailyCalorieChangeRepository.findAll();
+        List<RecommandCalorie> entityList = dailyCalorieChangeRepository.findAll();
 
         DailyCalorieSummaryEvent resultDto=new DailyCalorieSummaryEvent(entityList
                 .stream()
                 .map(ResponseDailyCalorieChangeDto::fromEntity)
                 .toList());
 
-        entityList.forEach(DailyCalorieChange::changeCalorie);
+        entityList.forEach(RecommandCalorie::changeCalorie);
         batchPersistTemplate.batchPersist(() -> entityList);
         Events.publish(resultDto);
     }
 
     @Transactional
     public void processMonthlyCalorieChange(){
-        List<DailyCalorieChange> entityList = dailyCalorieChangeRepository.findAll();
+        List<RecommandCalorie> entityList = dailyCalorieChangeRepository.findAll();
         MonthCalorieSummeryEvent resultDto = new MonthCalorieSummeryEvent(entityList
                 .stream()
                 .map(ResponseDailyCalorieChangeDto::fromEntity)
                 .toList());
 
-        entityList.forEach(DailyCalorieChange::resetCalorie);
+        entityList.forEach(RecommandCalorie::resetCalorie);
         batchPersistTemplate.batchPersist(() -> entityList);
         Events.publish(resultDto);
     }

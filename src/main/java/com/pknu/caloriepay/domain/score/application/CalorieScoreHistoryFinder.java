@@ -1,7 +1,7 @@
 package com.pknu.caloriepay.domain.score.application;
 
-import com.pknu.caloriepay.domain.score.dao.CalorieScoreRepository;
-import com.pknu.caloriepay.domain.score.domain.CalorieScore;
+import com.pknu.caloriepay.domain.score.dao.CalorieScoreHistoryRepository;
+import com.pknu.caloriepay.domain.score.domain.CalorieScoreHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,11 +11,11 @@ import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor
-public class CalorieScoreFinder {
+public class CalorieScoreHistoryFinder {
 
-    private final CalorieScoreRepository calorieScoreRepository;
+    private final CalorieScoreHistoryRepository calorieScoreRepository;
 
-    public List<CalorieScore> getCalorieScoreChangeForMonth(Long userId, Integer offset, LocalDate date) {
+    public List<CalorieScoreHistory> getCalorieScoreChangeForMonth(Long userId, Integer offset, LocalDate date) {
 
         return IntStream.range(0, offset)
                 .mapToObj(i -> {

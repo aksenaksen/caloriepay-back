@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CalorieScore {
+public class CalorieScoreHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,16 +27,14 @@ public class CalorieScore {
 
     private Integer score;
 
-    public static CalorieScore createCalorieScoreOld(long userId, double remainCalorie){
-        CalorieScore newScore = CalorieScore.builder()
+    public static CalorieScoreHistory createCalorieScoreOld(long userId, double remainCalorie){
+        CalorieScoreHistory newScore = CalorieScoreHistory.builder()
                 .userId(userId)
                 .date(LocalDate.now())
                 .build();
         newScore.calculateScore(remainCalorie);
         return newScore;
     }
-
-
 
     public void calculateScore(double remainCalorie){
         this.score= (int) (remainCalorie/2);

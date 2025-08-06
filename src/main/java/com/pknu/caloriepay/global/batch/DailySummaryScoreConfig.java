@@ -1,7 +1,7 @@
 package com.pknu.caloriepay.global.batch;
 
-import com.pknu.caloriepay.domain.score.domain.CalorieScore;
-import com.pknu.caloriepay.domain.score.domain.DailyCalorieChange;
+import com.pknu.caloriepay.domain.recommandcalorie.domain.RecommandCalorie;
+import com.pknu.caloriepay.domain.score.domain.CalorieScoreHistory;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,14 +25,14 @@ public class DailySummaryScoreConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
     private final EntityManagerFactory emf;
-    private final JpaCursorItemReader<DailyCalorieChange> dailyCalorieReader;
+    private final JpaCursorItemReader<RecommandCalorie> dailyCalorieReader;
     private final StepLoggerListener stepLoggerListener;
 
 
     @Bean
     public Step dailyCalorieSummaryScoreStep(){
         return new StepBuilder("dailyCalorieSummaryScoreStep", jobRepository)
-                .<DailyCalorieChange, CalorieScore>chunk(20, transactionManager)
+                .<RecommandCalorie, CalorieScoreHistory>chunk(20, transactionManager)
                 .reader(dailyCalorieReader)
                 .processor(dailyCalorieSummaryScoreProcessor())
                 .writer(dailyCalorieSummaryScoreWriter())
@@ -41,8 +41,8 @@ public class DailySummaryScoreConfig {
     }
 
     @Bean
-    public JpaCursorItemReader<CalorieScore> dailyCalorieSummaryScoreReader(){
-        return new JpaCursorItemReaderBuilder<CalorieScore>()
+    public JpaCursorItemReader<CalorieScoreHistory> dailyCalorieSummaryScoreReader(){
+        return new JpaCursorItemReaderBuilder<CalorieScoreHistory>()
                 .name("dailyCalorieSummaryScoreReader")
                 .entityManagerFactory(emf)
                 .queryString("SELECT c FROM CalorieScore c")
@@ -50,7 +50,7 @@ public class DailySummaryScoreConfig {
     }
 
     @Bean
-    public ItemProcessor<DailyCalorieChange, CalorieScore> dailyCalorieSummaryScoreProcessor(){
+    public ItemProcessor<RecommandCalorie, CalorieScoreHistory> dailyCalorieSummaryScoreProcessor(){
         return item -> {
 //                log.info("Before item={}", item.toString());
 //                String key = "userId::" + item.getUserId();
@@ -58,14 +58,14 @@ public class DailySummaryScoreConfig {
 //                DailyCalorieChange dailyCalorieChange = redisTemplate.opsForValue().get(key);
 //                if(dailyCalorieChange == null) return null;
 
-            return CalorieScore.createCalorieScoreOld(item.getUserId(),item.getRemainCalorie());
+            return CalorieScoreHistory.createCalorieScoreOld(item.getUserId(),item.getRemainCalorie());
         };
     }
 
     @Bean
-    public JpaItemWriter<CalorieScore> dailyCalorieSummaryScoreWriter(){
+    public JpaItemWriter<CalorieScoreHistory> dailyCalorieSummaryScoreWriter(){
 
-        return new JpaItemWriterBuilder<CalorieScore>()
+        return new JpaItemWriterBuilder<CalorieScoreHistory>()
                 .entityManagerFactory(emf)
                 .usePersist(true)
                 .build();

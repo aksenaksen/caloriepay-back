@@ -6,19 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Embeddable
-@Getter
-@NoArgsConstructor
-@EqualsAndHashCode
-public class Duration {
+public record Duration(int minutes) {
 
-    private int minutes;
-
-    public Duration(int minutes) {
-        if(minutes < 0){
+    public Duration {
+        if (minutes < 0) {
             throw new IllegalArgumentException("운동시간은 0보다 커야합니다.");
         }
-        this.minutes = minutes;
     }
 
-
+    // JPA를 위한 기본 생성자
+    protected Duration() {
+        this(0);
+    }
 }

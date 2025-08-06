@@ -1,9 +1,9 @@
 package com.pknu.caloriepay.domain.score.event;
 
-import com.pknu.caloriepay.domain.score.dao.CalorieScoreRepository;
-import com.pknu.caloriepay.domain.score.dao.DailyCalorieChangeRepository;
-import com.pknu.caloriepay.domain.score.domain.CalorieScore;
-import com.pknu.caloriepay.domain.score.domain.DailyCalorieChange;
+import com.pknu.caloriepay.domain.recommandcalorie.domain.RecommandCalorie;
+import com.pknu.caloriepay.domain.score.dao.CalorieScoreHistoryRepository;
+import com.pknu.caloriepay.domain.recommandcalorie.infrastructor.RecommandCalorieHistoryRepository;
+import com.pknu.caloriepay.domain.score.domain.CalorieScoreHistory;
 import com.pknu.caloriepay.global.enums.ResCode;
 import com.pknu.caloriepay.global.error.CustomException;
 import com.pknu.caloriepay.domain.exercise.domain.ExerciseRecordEvent;
@@ -27,8 +27,8 @@ public class CalorieScoreAndChangeEventListener {
 
     private static final int baseScore = 300;
 
-    private final CalorieScoreRepository calorieScoreRepository;
-    private final DailyCalorieChangeRepository dailyCalorieChangeRepository;
+    private final CalorieScoreHistoryRepository calorieScoreRepository;
+    private final RecommandCalorieHistoryRepository dailyCalorieChangeRepository;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -39,7 +39,7 @@ public class CalorieScoreAndChangeEventListener {
                         existingScore -> {},
                         // 존재하지 않을 경우 새로 생성하여 저장
                         () -> {
-                            CalorieScore calorieScore = CalorieScore.builder()
+                            CalorieScoreHistory calorieScore = CalorieScoreHistory.builder()
                                     .userId(userProfileEventDto.getUserId())
                                     .date(LocalDate.now())
                                     .score(baseScore) // baseScore는 미리 정의된 값
@@ -52,8 +52,8 @@ public class CalorieScoreAndChangeEventListener {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void createDailyCalorie(UserProfileEventDto userProfileEventDto){
-        DailyCalorieChange dailyCalorieChange = dailyCalorieChangeRepository.findByUserId(userProfileEventDto.getUserId())
-                .orElseGet(() -> DailyCalorieChange.builder()
+        RecommandCalorie dailyCalorieChange = dailyCalorieChangeRepository.findByUserId(userProfileEventDto.getUserId())
+                .orElseGet(() -> RecommandCalorie.builder()
                         .userId(userProfileEventDto.getUserId())
                         .totalCalorie(0)
                         .build());
@@ -70,7 +70,7 @@ public class CalorieScoreAndChangeEventListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void caloriePlus(ExerciseRecordEvent exerciseEventDto){
 
-        DailyCalorieChange calorieChange= dailyCalorieChangeRepository.findByUserId(exerciseEventDto.getUserId()).orElseThrow(() -> new CustomException(ResCode.DAILY_CHANGE_NOT_FOUND));
+        RecommandCalorie calorieChange= dailyCalorieChangeRepository.findByUserId(exerciseEventDto.getUserId()).orElseThrow(() -> new CustomException(ResCode.DAILY_CHANGE_NOT_FOUND));
         calorieChange.plusCalorie(exerciseEventDto.getCalorie());
         dailyCalorieChangeRepository.save(calorieChange);
     }
@@ -78,7 +78,7 @@ public class CalorieScoreAndChangeEventListener {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void calorieMinus(MealEventDto mealEventDto){
-        DailyCalorieChange calorieChange= dailyCalorieChangeRepository.findByUserId(mealEventDto.getUserId()).orElseThrow(() -> new CustomException(ResCode.DAILY_CHANGE_NOT_FOUND));
+        RecommandCalorie calorieChange= dailyCalorieChangeRepository.findByUserId(mealEventDto.getUserId()).orElseThrow(() -> new CustomException(ResCode.DAILY_CHANGE_NOT_FOUND));
         calorieChange.minusCalorie(mealEventDto.getCalorie());
         dailyCalorieChangeRepository.save(calorieChange);
     }
