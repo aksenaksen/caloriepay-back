@@ -2,7 +2,7 @@
 
 > 2024 BIDIA Dev-ton 출품작
 
-AI 기반 식단 관리 다이어리 플랫폼
+AI 기반 식단 관리 다이어리 플랫폼 - https://github.com/caloriepay/caloriepay-back/tree/product-cache 기존 레포
 
 ## 프로젝트 소개
 
