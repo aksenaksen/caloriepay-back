@@ -79,6 +79,8 @@ public class Member {
         this.nickname = nickname;
     }
 
-
+    public void updateScore(Integer score) {
+        this.score = score;
+    }
 
 }

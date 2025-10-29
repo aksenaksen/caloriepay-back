@@ -8,7 +8,7 @@ import com.pknu.caloriepay.global.enums.ResCode;
 import com.pknu.caloriepay.global.error.CustomException;
 import com.pknu.caloriepay.domain.exercise.domain.ExerciseRecordEvent;
 import com.pknu.caloriepay.global.event.MealEventDto;
-import com.pknu.caloriepay.global.event.UserProfileEventDto;
+import com.pknu.caloriepay.global.event.UserProfileEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -32,7 +32,7 @@ public class CalorieScoreAndChangeEventListener {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void createCalorieScore(UserProfileEventDto userProfileEventDto) {
+    public void createCalorieScore(UserProfileEvent userProfileEventDto) {
         calorieScoreRepository.findByUserIdAndDate(userProfileEventDto.getUserId(), LocalDate.now())
                 .ifPresentOrElse(
                         // 이미 존재할 경우 아무 작업도 하지 않음
@@ -51,7 +51,7 @@ public class CalorieScoreAndChangeEventListener {
 //    멤버 프로필 변경이 있을때
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void createDailyCalorie(UserProfileEventDto userProfileEventDto){
+    public void createDailyCalorie(UserProfileEvent userProfileEventDto){
         RecommandCalorie dailyCalorieChange = dailyCalorieChangeRepository.findByUserId(userProfileEventDto.getUserId())
                 .orElseGet(() -> RecommandCalorie.builder()
                         .userId(userProfileEventDto.getUserId())

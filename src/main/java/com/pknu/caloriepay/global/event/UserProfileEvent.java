@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class UserProfileEventDto {
+public class UserProfileEvent {
     private Long userId;
 
     private Profile profile;

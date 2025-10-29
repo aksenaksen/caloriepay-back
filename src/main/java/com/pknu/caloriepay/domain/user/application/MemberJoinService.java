@@ -8,7 +8,7 @@ import com.pknu.caloriepay.domain.user.dto.ProfileDto;
 import com.pknu.caloriepay.domain.user.dto.request.JoinRequestDto;
 import com.pknu.caloriepay.global.enums.ResCode;
 import com.pknu.caloriepay.global.error.CustomException;
-import com.pknu.caloriepay.global.event.UserProfileEventDto;
+import com.pknu.caloriepay.global.event.UserProfileEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -72,7 +72,7 @@ public class MemberJoinService {
         member.updateProfile(profile);
         memberHistoryService.recordMemberHistory(member);
 
-        UserProfileEventDto event = UserProfileEventDto.builder()
+        UserProfileEvent event = UserProfileEvent.builder()
                 .userId(member.getId())
                 .profile(profile)
                 .build();

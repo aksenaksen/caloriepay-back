@@ -24,6 +24,7 @@ public class DailySummaryBatchConfig {
     private final Step dailyCalorieSummaryResetStep;
     private final Step dailyCalorieSummaryScoreStep;
     private final Step dailyCalorieSummaryTierStep;
+    private final Step dailyUserScoreStep;
 
     @Bean
     public Job dailySummaryJob(){
@@ -31,6 +32,7 @@ public class DailySummaryBatchConfig {
                 .start(dailyCalorieSummaryScoreStep)
                 .next(dailyCalorieSummaryTierStep)
                 .next(dailyCalorieSummaryResetStep)
+                .next(dailyUserScoreStep)
                 .build();
     }
 

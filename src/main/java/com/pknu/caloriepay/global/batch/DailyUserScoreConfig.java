@@ -1,8 +1,7 @@
 package com.pknu.caloriepay.global.batch;
 
-import com.pknu.caloriepay.domain.recommandcalorie.domain.RecommandCalorie;
-import com.pknu.caloriepay.domain.score.domain.CalorieScoreHistory;
 import com.pknu.caloriepay.domain.user.dao.MemberRankingRedisRepository;
+import com.pknu.caloriepay.domain.user.domain.Member;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,23 +17,26 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.time.LocalDate;
+
 @Slf4j
-@Configuration
 @RequiredArgsConstructor
-public class DailySummaryScoreConfig {
+@Configuration
+public class DailyUserScoreConfig {
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
     private final EntityManagerFactory emf;
-    private final JpaCursorItemReader<RecommandCalorie> dailyCalorieReader;
     private final StepLoggerListener stepLoggerListener;
+    private final MemberRankingRedisRepository memberRankingRedisRepository;
 
 
     @Bean
-    public Step dailyCalorieSummaryScoreStep(){
-        return new StepBuilder("dailyCalorieSummaryScoreStep", jobRepository)
-                .<RecommandCalorie, CalorieScoreHistory>chunk(20, transactionManager)
-                .reader(dailyCalorieReader)
+    public Step dailyUserScoreStep(){
+
+        return new StepBuilder("DailyUserScoreStep", jobRepository)
+                .<Object[], Member>chunk(20, transactionManager)
+                .reader(dailyCalorieSummaryScoreReader())
                 .processor(dailyCalorieSummaryScoreProcessor())
                 .writer(dailyCalorieSummaryScoreWriter())
                 .listener(stepLoggerListener)
@@ -42,33 +44,37 @@ public class DailySummaryScoreConfig {
     }
 
     @Bean
-    public JpaCursorItemReader<CalorieScoreHistory> dailyCalorieSummaryScoreReader(){
-        return new JpaCursorItemReaderBuilder<CalorieScoreHistory>()
+    public JpaCursorItemReader<Object[]> dailyCalorieSummaryScoreReader(){
+        return new JpaCursorItemReaderBuilder<Object[]>()
                 .name("dailyCalorieSummaryScoreReader")
                 .entityManagerFactory(emf)
-                .queryString("SELECT c FROM CalorieScore c")
+                .queryString("SELECT m, c.score FROM Member m " +
+                           "JOIN CalorieScoreHistory c ON m.id = c.userId " +
+                           "WHERE c.date = :currentDate")
+                .parameterValues(java.util.Map.of("currentDate", LocalDate.now()))
                 .build();
     }
 
     @Bean
-    public ItemProcessor<RecommandCalorie, CalorieScoreHistory> dailyCalorieSummaryScoreProcessor(){
+    public ItemProcessor<Object[], Member> dailyCalorieSummaryScoreProcessor(){
         return item -> {
-//                log.info("Before item={}", item.toString());
-//                String key = "userId::" + item.getUserId();
-//
-//                DailyCalorieChange dailyCalorieChange = redisTemplate.opsForValue().get(key);
-//                if(dailyCalorieChange == null) return null;
+            Member member = (Member) item[0];
+            Integer todayScore = (Integer) item[1];
 
-            return CalorieScoreHistory.createCalorieScoreOld(item.getUserId(),item.getRemainCalorie());
+            member.updateScore(todayScore);
+            memberRankingRedisRepository.add(member.getId(), member.getScore());
+            log.info("Member ID: {}, Updated Score: {}", member.getId(), todayScore);
+            
+            return member;
         };
     }
 
     @Bean
-    public JpaItemWriter<CalorieScoreHistory> dailyCalorieSummaryScoreWriter(){
+    public JpaItemWriter<Member> dailyCalorieSummaryScoreWriter(){
 
-        return new JpaItemWriterBuilder<CalorieScoreHistory>()
+        return new JpaItemWriterBuilder<Member>()
                 .entityManagerFactory(emf)
-                .usePersist(true)
+                .usePersist(false)
                 .build();
     }
 }
