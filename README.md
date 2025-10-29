@@ -245,6 +245,3 @@ src/main/java/com/pknu/caloriepay/
     ├── error/                # 에러 처리
     └── filter/               # JWT 필터
 ```
-
-
-```
